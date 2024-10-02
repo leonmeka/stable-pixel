@@ -38,7 +38,8 @@ To run the app locally, you need to have the following tools installed:
 The app uses environment variables to configure all sorts of things. You can create a `.env` file in the root of the project and add the following variables:
 
 ```bash
-DATABASE_URL="postgresql://postgres:evkY6Mm1OxkXSwTs@localhost:5432/stable-pixel"
+DATABASE_URL="postgresql://postgres:evkY6Mm1OxkXSwTs@localhost:5432/stable-pixel?pgbouncer=true&connection_limit=1"
+DATABASE_DIRECT_URL="postgresql://postgres:evkY6Mm1OxkXSwTs@localhost:5432/stable-pixel"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="<VALUE>"
 DISCORD_CLIENT_ID="<VALUE>"
