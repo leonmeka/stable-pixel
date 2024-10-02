@@ -24,6 +24,7 @@ export const useImageSize = (ref: React.RefObject<HTMLDivElement>) => {
     }
 
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       if (ref.current) {
         observer.disconnect();
       }
