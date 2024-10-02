@@ -10,8 +10,7 @@
     "cog:load": "cd cog && cog run scripts/load_models",
     "cog:run": "cd cog && cog run predict",
     "cog:push": "cd cog && cog push",
-    "postinstall": "prisma generate",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "postinstall": "prisma generate && prisma migrate deploy && next build",
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
