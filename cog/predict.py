@@ -139,7 +139,7 @@ class Predictor(BasePredictor):
         image = self.image_resizer.resize(image, 5120, 5120)
 
         # Pixelate the image
-        image = self.image_pixelator.pixelate(image, max_colors=16, pixel_size=4)
+        image = self.image_pixelator.pixelate(image, max_colors=16, pixel_size=10)
 
         # 5.120x5.120 -> 256x256
         image = self.image_resizer.resize(image, 256, 256)
