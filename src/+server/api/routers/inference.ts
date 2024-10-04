@@ -43,4 +43,84 @@ export const inferenceRouter = createTRPCRouter({
         ms: elapsed,
       };
     }),
+
+  create: publicProcedure
+    .input(
+      z.object({
+        prompt: z.string(),
+        numInferenceSteps: z.number(),
+        guidanceScale: z.number(),
+        poseStrength: z.number(),
+        pose: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const identifier = env.REPLICATE_MODEL_ID;
+      const model = identifier.split("/")[1] as never;
+      const version = identifier.split(":")[1];
+
+      const prediction = await replicate.predictions.create({
+        model,
+        version,
+        input: {
+          prompt: input.prompt,
+          num_inference_steps: input.numInferenceSteps,
+          guidance_scale: input.guidanceScale,
+
+          pose_image: input.pose,
+          controlnet_conditioning_scale: input.poseStrength,
+
+          scheduler: "K_EULER_ANCESTRAL",
+        },
+      });
+
+      return prediction.id;
+    }),
+
+  get: publicProcedure.input(z.string()).query(async ({ input }) => {
+    const prediction = await replicate.predictions.get(input);
+
+    return prediction;
+  }),
+
+  list: publicProcedure.query(async () => {
+    const predictions = await replicate.predictions.list();
+
+    const ttlHasExpired = (started_at?: string) => {
+      if (!started_at) {
+        return false;
+      }
+
+      const expires = 3600;
+      const now = Date.now();
+
+      const startedAt = new Date(started_at).getTime();
+      const elapsed = now - startedAt;
+      const elapsedSeconds = elapsed / 1000;
+
+      return elapsedSeconds > expires;
+    };
+
+    const filtered = predictions.results.filter((item) => {
+      if (["failed", "canceled"].includes(item.status)) {
+        return false;
+      }
+
+      if (["starting", "processing"].includes(item.status)) {
+        return true;
+      }
+
+      if (item.status === "succeeded") {
+        return !ttlHasExpired(item.started_at);
+      }
+    });
+
+    return filtered;
+  }),
+
+  cancel: publicProcedure.input(z.string()).mutation(async ({ input }) => {
+    const success = await replicate.predictions.cancel(input);
+
+    return success;
+  }),
 });

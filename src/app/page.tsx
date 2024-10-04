@@ -9,17 +9,19 @@ import { Toaster } from "@/components/ui/sonner";
 import { OpenposeEditor } from "@/components/features/openpose/openpose-editor";
 import { useAppState } from "@/hooks/use-app-state";
 import { blobToBase64 } from "@/lib/utils";
+import { List } from "@/components/features/generation/list";
 
 export default function Home() {
   const { image, setImage, pose } = useAppState();
 
-  const { mutateAsync, isPending } = api.inference.generate.useMutation({
-    onSuccess: (data) => {
-      setImage(data.image);
-      toast(`Image generated in ${data.ms} ms`, {
+  const { inference } = api.useUtils();
+  const { mutateAsync, isPending } = api.inference.create.useMutation({
+    onSuccess: async () => {
+      toast("Image is generating...", {
         position: "top-right",
         duration: 1500,
       });
+      await inference.list.invalidate();
     },
     onError: (error) => {
       toast("Something went wrong...", {
@@ -33,16 +35,6 @@ export default function Home() {
   return (
     <main className="flex h-screen w-screen flex-col">
       <div className="flex h-full">
-        <div className="flex h-full w-full flex-col">
-          <div className="flex h-1/2 w-full">
-            <Output src={image} title="Generated Image" />
-          </div>
-
-          <div className="flex h-1/2 w-full">
-            <OpenposeEditor />
-          </div>
-        </div>
-
         <div className="h-full w-[500px]">
           <Prompt
             onSubmit={async (data) => {
@@ -59,6 +51,24 @@ export default function Home() {
             }}
             isPending={isPending}
             isDisabled={!pose}
+          />
+        </div>
+
+        <div className="flex h-full w-full flex-col">
+          <div className="flex h-1/2 w-full">
+            <Output src={image} title="Generated Image" />
+          </div>
+
+          <div className="flex h-1/2 w-full">
+            <OpenposeEditor />
+          </div>
+        </div>
+
+        <div className="h-full w-[250px]">
+          <List
+            onImageClick={(_input, output) => {
+              setImage(output);
+            }}
           />
         </div>
       </div>

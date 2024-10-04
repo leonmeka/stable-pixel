@@ -1,5 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
 import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
 
 interface OutputProps {
   src?: string | File | null;
@@ -17,7 +17,7 @@ export const Output = ({ src, title }: OutputProps) => {
         )}
 
         {src && (
-          <Image
+          <img
             src={src instanceof File ? URL.createObjectURL(src) : src}
             alt="Generated Image"
             className="absolute inset-0 h-full w-full object-contain"
