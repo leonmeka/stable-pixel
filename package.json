@@ -7,7 +7,6 @@
     "db:up": "./start-database.sh",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "cog:load": "cd cog && cog run scripts/load_models",
     "cog:run": "cd cog && cog run predict",
     "cog:push": "cd cog && cog push",
     "postinstall": "prisma generate && prisma migrate deploy && next build",

@@ -2,7 +2,7 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import { type PredictionInput } from "@/types";
-import { Loader } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 interface ListProps {
   onImageClick: (input: PredictionInput, output: string) => void;
@@ -12,11 +12,11 @@ export const List = ({ onImageClick }: ListProps) => {
   const { data, isPending } = api.inference.list.useQuery();
 
   return (
-    <div className="grid h-full gap-1 p-2">
+    <div className="grid h-full gap-1 border p-2">
       {isPending && (
         <div className="grid items-center justify-center">
           <div className="flex flex-col items-center justify-center gap-2">
-            <Loader size={24} className="animate-spin" />
+            <Loader2 size={24} className="animate-spin" />
             <p className="text-muted-foreground">Loading...</p>
           </div>
         </div>
@@ -41,8 +41,8 @@ export const List = ({ onImageClick }: ListProps) => {
                   />
                 ) : (
                   <div className="grid aspect-square animate-pulse items-center justify-center bg-muted">
-                    <Loader
-                      size={16}
+                    <Loader2
+                      size={32}
                       className="animate-spin text-muted-foreground"
                     />
                   </div>

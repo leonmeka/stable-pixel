@@ -4,11 +4,12 @@ from PIL import Image
 import base64
 from io import BytesIO
 
-from cog import BasePredictor, Input, File
+from cog import BasePredictor, Input
 
 from diffusers import (
-    ControlNetModel, 
-    StableDiffusionXLControlNetPipeline, 
+    T2IAdapter, 
+    AutoencoderKL,
+    StableDiffusionXLAdapterPipeline, 
     PNDMScheduler,
     LMSDiscreteScheduler,
     DDIMScheduler,
@@ -22,7 +23,8 @@ from classes.image_pixelator import ImagePixelator
 from classes.r2_uploader import R2Uploader
 
 MODEL_ID = "John6666/super-pixelart-xl-m-v1-v10-sdxl"
-CONTROLNET_MODEL_ID = "xinsir/controlnet-union-sdxl-1.0"
+ADAPTER__MODEL_ID = "TencentARC/t2i-adapter-openpose-sdxl-1.0"
+VAE_MODEL_ID = "madebyollin/sdxl-vae-fp16-fix"
 MODEL_CACHE = "diffusers-cache"
 
 def use_scheduler(name, config):
@@ -50,21 +52,28 @@ class Predictor(BasePredictor):
     def setup(self):
         print("Loading pipeline...")
 
-        print("1: Loading controlnet...")
-        controlnet = ControlNetModel.from_pretrained(
-            CONTROLNET_MODEL_ID,
-            torch_dtype=torch.float16 if self.device == "cuda" else torch.float32,
-            cache_dir=MODEL_CACHE,
+        print("1: Loading Adapter...")
+        adapter = T2IAdapter.from_pretrained(
+            ADAPTER__MODEL_ID, torch_dtype=torch.float16,
+            cache_dir=MODEL_CACHE
+        ).to(self.device)
+        
+        print("2: Loading vae...")
+        vae=AutoencoderKL.from_pretrained(
+            VAE_MODEL_ID, 
+            torch_dtype=torch.float16, 
+            cache_dir=MODEL_CACHE
         )
 
-        print("2: Loading Stable Diffusion XL...")
-        self.pipe = StableDiffusionXLControlNetPipeline.from_pretrained(
+        print("3: Loading Stable Diffusion XL Adapter Pipeline...")
+        self.pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
             MODEL_ID,
-            controlnet=controlnet,
+            vae=vae,
+            adapter=adapter,
             safety_checker=None,
             torch_dtype=torch.float16 if self.device == "cuda" else torch.float32,
             cache_dir=MODEL_CACHE,
-        ).to("cuda")
+        ).to(self.device)
 
         print("Pipeline loaded succesfully!")
 
@@ -107,13 +116,13 @@ class Predictor(BasePredictor):
         Parameters = {
             "width": 1024,
             "height": 1024,
-            "prompt": prompt + ", pixel art style , (concept art), ((solid grey background)), flat, simple colors",
+            "prompt": prompt + ", (concept art), (realistic), (high detail), ((solid grey background))",
             "negative_prompt": negative_prompt + "realistic, 3d render, photo, text, watermark, blurry, deformed, depth of field, 3d render, ((outline)), (shadow), (extra objects)",
             "num_inference_steps": num_inteference_steps,
             "guidance_scale": guidance_scale,
 
             "image": pose_image,
-            "controlnet_conditioning_scale": controlnet_conditioning_scale,
+            "adapter_conditioning_scale": controlnet_conditioning_scale,
 
             "generator": generator,
             "num_images_per_prompt": 1
@@ -130,10 +139,10 @@ class Predictor(BasePredictor):
         image = self.image_resizer.resize(image, 5120, 5120)
 
         # Pixelate the image
-        image = self.image_pixelator.pixelate(image, max_colors=16, pixel_size=8)
+        image = self.image_pixelator.pixelate(image, max_colors=16, pixel_size=4)
 
-        # 5.120x5.120 -> 1024x1024
-        image = self.image_resizer.resize(image, 1024, 1024)
+        # 5.120x5.120 -> 256x256
+        image = self.image_resizer.resize(image, 256, 256)
 
         file_url = self.r2_uploader.upload_image(image)
 

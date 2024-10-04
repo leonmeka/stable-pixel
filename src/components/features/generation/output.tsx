@@ -2,13 +2,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 
 interface OutputProps {
-  src?: string | File | null;
+  src?: string | null;
   title?: string;
 }
 
 export const Output = ({ src, title }: OutputProps) => {
   return (
-    <Card className="relative h-full w-full flex-1">
+    <Card className="relative h-full w-full flex-1 border-none">
       <CardContent className="grid h-full w-full items-center justify-center p-0">
         {!src && (
           <p className="text-center text-muted-foreground">
@@ -18,9 +18,9 @@ export const Output = ({ src, title }: OutputProps) => {
 
         {src && (
           <img
-            src={src instanceof File ? URL.createObjectURL(src) : src}
+            src={src}
             alt="Generated Image"
-            className="absolute inset-0 h-full w-full object-contain"
+            className="absolute inset-0 m-auto w-[256px] object-contain"
           />
         )}
 

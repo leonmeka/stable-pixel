@@ -24,7 +24,7 @@ export const OpenposeEditor = () => {
   const imageRef = useRef<HTMLDivElement>(null);
   const imageSize = useImageSize(imageRef);
 
-  const imageVertexSize = (5 * imageSize.width) / 512;
+  const imageVertexSize = (5 * imageSize.width) / 1024;
 
   useEffect(() => {
     if (!draggingVertex) return;
@@ -85,7 +85,7 @@ export const OpenposeEditor = () => {
   };
 
   return (
-    <Card className="relative h-full w-full flex-1">
+    <Card className="relative h-full w-full flex-1 border-none">
       <CardContent
         ref={imageRef}
         className="relative inset-0 m-auto aspect-square h-full"

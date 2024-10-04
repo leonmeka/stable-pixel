@@ -2,48 +2,18 @@ import Replicate from "replicate";
 import { z } from "zod";
 
 import { env } from "@/env";
-import { createTRPCRouter, publicProcedure } from "@/+server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/+server/api/trpc";
+import { db } from "@/+server/db";
 
 const replicate = new Replicate({
   auth: env.REPLICATE_API_KEY,
 });
 
 export const inferenceRouter = createTRPCRouter({
-  generate: publicProcedure
-    .input(
-      z.object({
-        prompt: z.string(),
-        numInferenceSteps: z.number(),
-        guidanceScale: z.number(),
-        poseStrength: z.number(),
-        pose: z.string(),
-      }),
-    )
-    .mutation(async ({ input }) => {
-      const t = performance.now();
-      const prediction = await replicate.run(
-        process.env.REPLICATE_MODEL_ID as never,
-        {
-          input: {
-            prompt: input.prompt,
-            num_inference_steps: input.numInferenceSteps,
-            guidance_scale: input.guidanceScale,
-
-            pose_image: input.pose,
-            controlnet_conditioning_scale: input.poseStrength,
-
-            scheduler: "K_EULER_ANCESTRAL",
-          },
-        },
-      );
-      const elapsed = performance.now() - t;
-
-      return {
-        image: prediction as unknown as string,
-        ms: elapsed,
-      };
-    }),
-
   create: publicProcedure
     .input(
       z.object({
@@ -54,7 +24,7 @@ export const inferenceRouter = createTRPCRouter({
         pose: z.string(),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const identifier = env.REPLICATE_MODEL_ID;
       const model = identifier.split("/")[1] as never;
       const version = identifier.split(":")[1];
@@ -74,16 +44,22 @@ export const inferenceRouter = createTRPCRouter({
         },
       });
 
+      await db.prediction.create({
+        data: {
+          predictionId: prediction.id,
+          userId: ctx.session!.user.id,
+        },
+      });
+
       return prediction.id;
     }),
 
-  get: publicProcedure.input(z.string()).query(async ({ input }) => {
-    const prediction = await replicate.predictions.get(input);
-
-    return prediction;
-  }),
-
-  list: publicProcedure.query(async () => {
+  list: protectedProcedure.query(async ({ ctx }) => {
+    const userPredictions = await db.prediction.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+    });
     const predictions = await replicate.predictions.list();
 
     const ttlHasExpired = (started_at?: string) => {
@@ -102,25 +78,31 @@ export const inferenceRouter = createTRPCRouter({
     };
 
     const filtered = predictions.results.filter((item) => {
+      // Filter out predictions that the user has not made
+      if (
+        !userPredictions.some(
+          (userPrediction) => userPrediction.predictionId === item.id,
+        )
+      ) {
+        return false;
+      }
+
+      // Filter out predictions that are not in a state that the user would care about
       if (["failed", "canceled"].includes(item.status)) {
         return false;
       }
 
+      // Directly return predictions that are in a state that the user would care about
       if (["starting", "processing"].includes(item.status)) {
         return true;
       }
 
+      // Filter out predictions that have expired
       if (item.status === "succeeded") {
         return !ttlHasExpired(item.started_at);
       }
     });
 
     return filtered;
-  }),
-
-  cancel: publicProcedure.input(z.string()).mutation(async ({ input }) => {
-    const success = await replicate.predictions.cancel(input);
-
-    return success;
   }),
 });

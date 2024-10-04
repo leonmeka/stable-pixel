@@ -10,8 +10,16 @@ import { OpenposeEditor } from "@/components/features/openpose/openpose-editor";
 import { useAppState } from "@/hooks/use-app-state";
 import { blobToBase64 } from "@/lib/utils";
 import { List } from "@/components/features/generation/list";
+import { Navbar } from "@/components/features/layout/navbar";
+import { useSession } from "next-auth/react";
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "@/components/ui/resizable";
 
 export default function Home() {
+  const { data: session } = useSession();
   const { image, setImage, pose } = useAppState();
 
   const { inference } = api.useUtils();
@@ -33,46 +41,55 @@ export default function Home() {
   });
 
   return (
-    <main className="flex h-screen w-screen flex-col overflow-hidden">
-      <div className="flex h-full">
-        <div className="h-full w-[500px]">
-          <Prompt
-            onSubmit={async (data) => {
-              if (!pose) {
-                return;
-              }
+    <div className="flex h-screen w-screen flex-col overflow-hidden">
+      <Navbar session={session} />
 
-              const base64 = await blobToBase64(pose);
+      <main className="flex h-full w-full flex-grow overflow-hidden">
+        <div className="flex h-full w-full overflow-hidden">
+          <div className="h-full w-[350px] flex-shrink-0 overflow-y-auto">
+            <Prompt
+              onSubmit={async (data) => {
+                if (!pose) {
+                  return;
+                }
 
-              await mutateAsync({
-                ...data,
-                pose: base64,
-              });
-            }}
-            isPending={isPending}
-            isDisabled={!pose}
-          />
-        </div>
+                const base64 = await blobToBase64(pose);
 
-        <div className="flex h-full w-full flex-col">
-          <div className="flex h-1/2 w-full">
-            <Output src={image} title="Generated Image" />
+                await mutateAsync({
+                  ...data,
+                  pose: base64,
+                });
+              }}
+              isPending={isPending}
+              isDisabled={!pose}
+            />
           </div>
 
-          <div className="flex h-1/2 w-full">
-            <OpenposeEditor />
+          <ResizablePanelGroup
+            direction="vertical"
+            className="flex h-full w-full flex-col overflow-hidden"
+          >
+            <ResizablePanel defaultSize={50}>
+              <Output src={image} title="Generated Image" />
+            </ResizablePanel>
+
+            <ResizableHandle withHandle />
+
+            <ResizablePanel defaultSize={25}>
+              <OpenposeEditor />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+
+          <div className="h-full w-[250px] flex-shrink-0 overflow-y-auto">
+            <List
+              onImageClick={(_input, output) => {
+                setImage(output);
+              }}
+            />
           </div>
         </div>
-
-        <div className="h-full w-[250px]">
-          <List
-            onImageClick={(_input, output) => {
-              setImage(output);
-            }}
-          />
-        </div>
-      </div>
-      <Toaster />
-    </main>
+        <Toaster />
+      </main>
+    </div>
   );
 }

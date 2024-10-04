@@ -31,8 +31,8 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
     resolver: zodResolver(SCHEMA),
     defaultValues: {
       prompt: "A generic man",
-      numInferenceSteps: 5,
-      guidanceScale: 1,
+      numInferenceSteps: 15,
+      guidanceScale: 2.5,
       poseStrength: 1,
     },
   });
@@ -41,7 +41,7 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex h-full w-full flex-col justify-between"
+        className="flex h-full w-full flex-col justify-between border"
       >
         <div className="grid gap-2 overflow-y-auto p-4">
           <FormField
@@ -115,6 +115,7 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
 
         <Button
           type="submit"
+          size={"lg"}
           loading={isPending}
           disabled={!form.formState.isValid || isPending || isDisabled}
         >
