@@ -46,3 +46,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+* {
+  ::-webkit-scrollbar {
+    width: 10px;
+    background-color: var(--background);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--secondary));
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--background);
+  }
+}

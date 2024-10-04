@@ -33,7 +33,7 @@ export default function Home() {
   });
 
   return (
-    <main className="flex h-screen w-screen flex-col">
+    <main className="flex h-screen w-screen flex-col overflow-hidden">
       <div className="flex h-full">
         <div className="h-full w-[500px]">
           <Prompt
@@ -44,7 +44,7 @@ export default function Home() {
 
               const base64 = await blobToBase64(pose);
 
-              void mutateAsync({
+              await mutateAsync({
                 ...data,
                 pose: base64,
               });

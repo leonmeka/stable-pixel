@@ -12,7 +12,7 @@ export const List = ({ onImageClick }: ListProps) => {
   const { data, isPending } = api.inference.list.useQuery();
 
   return (
-    <div className="grid h-full gap-1">
+    <div className="grid h-full gap-1 p-2">
       {isPending && (
         <div className="grid items-center justify-center">
           <div className="flex flex-col items-center justify-center gap-2">
@@ -25,25 +25,27 @@ export const List = ({ onImageClick }: ListProps) => {
       {!isPending && (
         <div className="flex flex-col gap-1 overflow-y-auto">
           {data?.map((item) => (
-            <Card
-              key={item.id}
-              className="border-none"
-              onClick={() =>
-                onImageClick(
-                  item.input as PredictionInput,
-                  item.output as string,
-                )
-              }
-            >
-              <CardContent className="p-1">
+            <Card key={item.id} className="border-none">
+              <CardContent className="p-2">
                 {item.status === "succeeded" ? (
                   <img
                     src={item.output as string}
                     alt={(item.input as PredictionInput).prompt}
+                    onClick={() =>
+                      onImageClick(
+                        item.input as PredictionInput,
+                        item.output as string,
+                      )
+                    }
                     className="aspect-square cursor-pointer outline outline-2 outline-muted-foreground hover:outline-primary"
                   />
                 ) : (
-                  <div className="aspect-square animate-pulse bg-muted" />
+                  <div className="grid aspect-square animate-pulse items-center justify-center bg-muted">
+                    <Loader
+                      size={16}
+                      className="animate-spin text-muted-foreground"
+                    />
+                  </div>
                 )}
               </CardContent>
 
