@@ -9,7 +9,7 @@
     "db:studio": "prisma studio",
     "cog:run": "cd cog && cog run predict",
     "cog:push": "cd cog && cog push",
-    "postinstall": "prisma generate && prisma migrate deploy && next build",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "lint": "eslint . --ext .ts,.tsx",
     "dev": "next dev",
     "build": "next build",

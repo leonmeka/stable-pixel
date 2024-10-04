@@ -19,7 +19,7 @@ export const Output = ({ src, title }: OutputProps) => {
         {src && (
           <img
             src={src}
-            alt="Generated Image"
+            alt={title}
             className="absolute inset-0 m-auto w-[256px] object-contain"
           />
         )}
