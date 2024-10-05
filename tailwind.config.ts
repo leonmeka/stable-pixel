@@ -52,7 +52,13 @@ export default {
           "5": "hsl(var(--chart-5))",
         },
       },
+      variants: {
+        imageRendering: ["responsive"],
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("tailwindcss-image-rendering")(),
+  ],
 } satisfies Config;

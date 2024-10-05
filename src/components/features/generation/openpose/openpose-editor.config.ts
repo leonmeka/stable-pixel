@@ -29,7 +29,7 @@ export const vertexData: Vertex[] = [
   },
   {
     name: "vertex_leftear",
-    position: { left: 44, top: 16 },
+    position: { left: 45, top: 16 },
     style: { backgroundColor: "#FF00AA" },
   },
   {
@@ -39,7 +39,7 @@ export const vertexData: Vertex[] = [
   },
   {
     name: "vertex_rightear",
-    position: { left: 56, top: 16 },
+    position: { left: 55, top: 16 },
     style: { backgroundColor: "#FF0055" },
   },
   {

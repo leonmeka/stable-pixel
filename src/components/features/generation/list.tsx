@@ -44,7 +44,7 @@ export const List = ({ onImageClick }: ListProps) => {
                         item.output as string,
                       )
                     }
-                    className="aspect-square cursor-pointer outline outline-2 outline-muted-foreground hover:outline-primary"
+                    className="rendering-pixelated aspect-square cursor-pointer outline outline-2 outline-muted-foreground hover:outline-primary"
                   />
                 ) : (
                   <div className="grid aspect-square animate-pulse items-center justify-center bg-muted">

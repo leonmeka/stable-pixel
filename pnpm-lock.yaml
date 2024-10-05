@@ -160,6 +160,9 @@ devDependencies:
   tailwindcss:
     specifier: ^3.4.3
     version: 3.4.13
+  tailwindcss-image-rendering:
+    specifier: ^1.0.2
+    version: 1.0.2
   typescript:
     specifier: ^5.5.3
     version: 5.6.2
@@ -1901,6 +1904,13 @@ packages:
       rimraf: 3.0.2
     dev: true
 
+  /flat@4.1.1:
+    resolution: {integrity: sha512-FmTtBsHskrU6FJ2VxCnsDb84wu9zhmO3cUX2kGFb5tuwhfXxGciiT0oRY+cck35QmG+NmGh5eLz6lLCpWTqwpA==}
+    hasBin: true
+    dependencies:
+      is-buffer: 2.0.5
+    dev: true
+
   /flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
     dev: true
@@ -2208,6 +2218,11 @@ packages:
       has-tostringtag: 1.0.2
     dev: true
 
+  /is-buffer@2.0.5:
+    resolution: {integrity: sha512-i2R6zNFDwgEHJyQUtJEk0XFi1i0dPFn/oqjK3/vPCcDeJvW5NQ83V8QbicfF1SupOaB0h8ntgBC2YiE7dfyctQ==}
+    engines: {node: '>=4'}
+    dev: true
+
   /is-bun-module@1.2.1:
     resolution: {integrity: sha512-AmidtEM6D6NmUiLOvvU7+IePxjEjOzra2h0pSrsfSAcXwl/83zLLXDByafUJy9k/rKK0pvXMLdwKwGHlX2Ke6Q==}
     dependencies:
@@ -2490,7 +2505,6 @@ packages:
 
   /lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: false
 
   /loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
@@ -3487,6 +3501,13 @@ packages:
     dependencies:
       tailwindcss: 3.4.13
     dev: false
+
+  /tailwindcss-image-rendering@1.0.2:
+    resolution: {integrity: sha512-WC3hJd2RbHBYIqtJxwpQ5z94wUNyBrJn1eFz3J/jR7OGrQB8WYbJGvJQ9scNNVzoHEYGoNdZbUI90l9YgpBCwg==}
+    dependencies:
+      flat: 4.1.1
+      lodash: 4.17.21
+    dev: true
 
   /tailwindcss@3.4.13:
     resolution: {integrity: sha512-KqjHOJKogOUt5Bs752ykCeiwvi0fKVkr5oqsFNt/8px/tA8scFPIlkygsf6jXrfCqGHz7VflA6+yytWuM+XhFw==}
