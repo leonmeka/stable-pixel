@@ -133,6 +133,7 @@ export const OpenposeEditor = () => {
       window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("mouseup", handleUp);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draggingVertex]);
 
   return (
