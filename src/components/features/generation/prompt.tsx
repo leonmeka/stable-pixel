@@ -31,8 +31,8 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
     resolver: zodResolver(SCHEMA),
     defaultValues: {
       prompt: "A generic man",
-      numInferenceSteps: 15,
-      guidanceScale: 2.5,
+      numInferenceSteps: 10,
+      guidanceScale: 1.5,
       poseStrength: 1,
     },
   });

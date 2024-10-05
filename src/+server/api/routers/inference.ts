@@ -13,15 +13,15 @@ const replicate = new Replicate({
   auth: env.REPLICATE_API_KEY,
 });
 
-const ttlHasExpired = (started_at?: string) => {
-  if (!started_at) {
-    return false;
+const ttlHasExpired = (timestamp?: string) => {
+  if (!timestamp) {
+    return true;
   }
 
   const expires = 3600;
   const now = Date.now();
 
-  const startedAt = new Date(started_at).getTime();
+  const startedAt = new Date(timestamp).getTime();
   const elapsed = now - startedAt;
   const elapsedSeconds = elapsed / 1000;
 
@@ -90,7 +90,7 @@ export const inferenceRouter = createTRPCRouter({
         return false;
       }
 
-      return ttlHasExpired(item.started_at);
+      return ttlHasExpired(item.completed_at);
     });
 
     return filtered;

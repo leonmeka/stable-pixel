@@ -24,22 +24,22 @@ export const vertexData: Vertex[] = [
   },
   {
     name: "vertex_lefteye",
-    position: { left: 46, top: 14 },
+    position: { left: 48, top: 14 },
     style: { backgroundColor: "#AA00FF" },
   },
   {
     name: "vertex_leftear",
-    position: { left: 42, top: 16 },
+    position: { left: 44, top: 16 },
     style: { backgroundColor: "#FF00AA" },
   },
   {
     name: "vertex_righteye",
-    position: { left: 54, top: 14 },
+    position: { left: 52, top: 14 },
     style: { backgroundColor: "#FF00FF" },
   },
   {
     name: "vertex_rightear",
-    position: { left: 58, top: 16 },
+    position: { left: 56, top: 16 },
     style: { backgroundColor: "#FF0055" },
   },
   {
@@ -59,22 +59,22 @@ export const vertexData: Vertex[] = [
   },
   {
     name: "vertex_leftelbow",
-    position: { left: 36, top: 42 },
+    position: { left: 40, top: 42 },
     style: { backgroundColor: "#FFFF00" },
   },
   {
     name: "vertex_rightelbow",
-    position: { left: 64, top: 42 },
+    position: { left: 60, top: 42 },
     style: { backgroundColor: "#00FF00" },
   },
   {
     name: "vertex_lefthand",
-    position: { left: 36, top: 54 },
+    position: { left: 40, top: 54 },
     style: { backgroundColor: "#AAFF00" },
   },
   {
     name: "vertex_righthand",
-    position: { left: 64, top: 54 },
+    position: { left: 60, top: 54 },
     style: { backgroundColor: "#00FF55" },
   },
   {
@@ -89,22 +89,22 @@ export const vertexData: Vertex[] = [
   },
   {
     name: "vertex_leftknee",
-    position: { left: 42, top: 73 },
+    position: { left: 45, top: 73 },
     style: { backgroundColor: "#00FFFF" },
   },
   {
     name: "vertex_rightknee",
-    position: { left: 58, top: 73 },
+    position: { left: 55, top: 73 },
     style: { backgroundColor: "#0000FF" },
   },
   {
     name: "vertex_leftfeet",
-    position: { left: 42, top: 90 },
+    position: { left: 45, top: 90 },
     style: { backgroundColor: "#00AAFF" },
   },
   {
     name: "vertex_rightfeet",
-    position: { left: 58, top: 90 },
+    position: { left: 55, top: 90 },
     style: { backgroundColor: "#5500FF" },
   },
 ];

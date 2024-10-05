@@ -3,26 +3,33 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import { type PredictionInput } from "@/types";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 interface ListProps {
   onImageClick: (input: PredictionInput, output: string) => void;
 }
 
 export const List = ({ onImageClick }: ListProps) => {
-  const { data, isPending } = api.inference.list.useQuery();
+  const session = useSession();
+  const { data, isLoading, isFetched } = api.inference.list.useQuery(
+    undefined,
+    {
+      enabled: session.status === "authenticated",
+      refetchInterval: 10_000,
+    },
+  );
 
   return (
     <div className="grid h-full gap-1 border p-2">
-      {isPending && (
+      {isLoading && (
         <div className="grid items-center justify-center">
-          <div className="flex flex-col items-center justify-center gap-2">
-            <Loader2 size={24} className="animate-spin" />
-            <p className="text-muted-foreground">Loading...</p>
+          <div className="flex flex-col items-center justify-center">
+            <Loader2 size={24} className="animate-spin text-muted-foreground" />
           </div>
         </div>
       )}
 
-      {!isPending && (
+      {isFetched && (
         <div className="flex flex-col gap-1 overflow-y-auto">
           {data?.map((item) => (
             <Card key={item.id} className="border-none">
@@ -49,7 +56,7 @@ export const List = ({ onImageClick }: ListProps) => {
                 )}
               </CardContent>
 
-              <CardFooter className="grid p-1">
+              <CardFooter className="grid p-2">
                 <p className="text-xs text-muted-foreground">
                   {(item.input as PredictionInput).prompt}
                 </p>

@@ -19,7 +19,7 @@ export const Output = ({ src }: OutputProps) => {
           <img
             src={src}
             alt={"generated image"}
-            className="absolute inset-0 m-auto w-[256px] object-contain"
+            className="absolute inset-0 m-auto h-full w-full object-contain"
           />
         )}
       </CardContent>

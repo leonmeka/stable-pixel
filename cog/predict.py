@@ -116,8 +116,8 @@ class Predictor(BasePredictor):
         Parameters = {
             "width": 1024,
             "height": 1024,
-            "prompt": prompt + ", (concept art), (realistic:1.4), (high detail:1.4), ((solid grey background))",
-            "negative_prompt": negative_prompt + "realistic, 3d render, photo, text, watermark, blurry, deformed, depth of field, 3d render, ((outline)), (shadow), (extra objects), (comic), (chibi)",
+            "prompt": prompt + "pixelart, pixel art, (concept art), (high detail:1.4), ((solid grey background))",
+            "negative_prompt": negative_prompt + "realistic, 3d render, photo, text, watermark, blurry, deformed, depth of field, 3d render, (outline)",
             "num_inference_steps": num_inteference_steps,
             "guidance_scale": guidance_scale,
 
@@ -135,15 +135,30 @@ class Predictor(BasePredictor):
 
         image = pipe_output.images[0]
 
-        # 1024x1024 -> 5.120x5.120
-        image = self.image_resizer.resize(image, 5120, 5120)
+        # 1024x1024 -> 8.192x8.192
+        image = self.image_resizer.resize(image, 8192, 8192)
+        print("image resized")
 
-        # Pixelate the image
-        image = self.image_pixelator.pixelate(image, max_colors=16, pixel_size=10)
+        # Detect pixel scale and downscale the image
+        downscaled_image, hspacing, vspacing  = self.image_pixelator.pixel_detect(image)
+        print("image pixelated")
+
+        # Determine the best number of colors for palette reduction
+        best_k = self.image_pixelator.determine_best_k(downscaled_image, max_k=16)
+        print("best k determined")
+
+        # Quantize the downscaled image to the best number of colors
+        quantized_image = downscaled_image.quantize(colors=best_k, method=1, kmeans=best_k, dither=0).convert('RGB')
+        print("image quantized")
+
+        # Pixelate the quantized image
+        pixelated_image = self.image_pixelator.pixelate(quantized_image, max_colors=best_k, pixel_size=round(hspacing))
+        print("image pixelated")
 
         # 5.120x5.120 -> 256x256
-        image = self.image_resizer.resize(image, 256, 256)
+        output = self.image_resizer.resize(pixelated_image, 256, 256)
+        print("image resized")
 
-        file_url = self.r2_uploader.upload_image(image)
+        file_url = self.r2_uploader.upload_image(output)
 
         return file_url
