@@ -75,7 +75,7 @@ export default function Home() {
 
             <ResizableHandle withHandle />
 
-            <ResizablePanel defaultSize={25}>
+            <ResizablePanel defaultSize={50}>
               <OpenposeEditor />
             </ResizablePanel>
           </ResizablePanelGroup>

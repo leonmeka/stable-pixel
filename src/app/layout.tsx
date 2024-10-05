@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 
+import { GeistMono } from "geist/font/mono";
 import { type Metadata } from "next";
 import { TRPCReactProvider } from "@/trpc/react";
 import { getSession } from "next-auth/react";
@@ -19,7 +20,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body>
+      <body className={GeistMono.className}>
         <TRPCReactProvider>
           <ClientSessionProvider session={session}>
             {children}
