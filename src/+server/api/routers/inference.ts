@@ -13,6 +13,21 @@ const replicate = new Replicate({
   auth: env.REPLICATE_API_KEY,
 });
 
+const ttlHasExpired = (started_at?: string) => {
+  if (!started_at) {
+    return false;
+  }
+
+  const expires = 3600;
+  const now = Date.now();
+
+  const startedAt = new Date(started_at).getTime();
+  const elapsed = now - startedAt;
+  const elapsedSeconds = elapsed / 1000;
+
+  return elapsedSeconds <= expires;
+};
+
 export const inferenceRouter = createTRPCRouter({
   create: publicProcedure
     .input(
@@ -62,23 +77,7 @@ export const inferenceRouter = createTRPCRouter({
     });
     const predictions = await replicate.predictions.list();
 
-    const ttlHasExpired = (started_at?: string) => {
-      if (!started_at) {
-        return false;
-      }
-
-      const expires = 3600;
-      const now = Date.now();
-
-      const startedAt = new Date(started_at).getTime();
-      const elapsed = now - startedAt;
-      const elapsedSeconds = elapsed / 1000;
-
-      return elapsedSeconds > expires;
-    };
-
     const filtered = predictions.results.filter((item) => {
-      // Filter out predictions that the user has not made
       if (
         !userPredictions.some(
           (userPrediction) => userPrediction.predictionId === item.id,
@@ -87,20 +86,11 @@ export const inferenceRouter = createTRPCRouter({
         return false;
       }
 
-      // Filter out predictions that are not in a state that the user would care about
       if (["failed", "canceled"].includes(item.status)) {
         return false;
       }
 
-      // Directly return predictions that are in a state that the user would care about
-      if (["starting", "processing"].includes(item.status)) {
-        return true;
-      }
-
-      // Filter out predictions that have expired
-      if (item.status === "succeeded") {
-        return !ttlHasExpired(item.started_at);
-      }
+      return ttlHasExpired(item.started_at);
     });
 
     return filtered;

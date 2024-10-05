@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Prompt } from "@/components/features/generation/prompt";
 import { Output } from "@/components/features/generation/output";
 import { Toaster } from "@/components/ui/sonner";
-import { OpenposeEditor } from "@/components/features/openpose/openpose-editor";
+import { OpenposeEditor } from "@/components/features/generation/openpose/openpose-editor";
 import { useAppState } from "@/hooks/use-app-state";
 import { blobToBase64 } from "@/lib/utils";
 import { List } from "@/components/features/generation/list";
@@ -70,7 +70,7 @@ export default function Home() {
             className="flex h-full w-full flex-col overflow-hidden"
           >
             <ResizablePanel defaultSize={50}>
-              <Output src={image} title="Generated Image" />
+              <Output src={image} />
             </ResizablePanel>
 
             <ResizableHandle withHandle />

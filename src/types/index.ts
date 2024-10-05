@@ -1,4 +1,4 @@
-export interface ImageSize {
+export interface CanvasSize {
   width: number;
   height: number;
 }

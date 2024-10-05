@@ -90,14 +90,6 @@ To get started, you need to install the `cog` command line tool. You can do this
 sh <(curl -fsSL https://cog.run/install.sh)
 ```
 
-## Installation
-
-To install the model locally, you need to load the models:
-
-```bash
-pnpm run cog:load
-```
-
 ## Usage
 
 ### Local development
@@ -115,9 +107,6 @@ pnpm run cog:run -i prompt="a generic man with a hat"
 ```
 
 ### Deployment
-
-> [!NOTE]
-> There's a [GitHub Action](.github/workflows/push.yaml) that will automatically publish the model to replicate when pushing to the `main` branch.
 
 If you want to push the model to the replicate, you can do so by running:
 

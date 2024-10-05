@@ -116,8 +116,8 @@ class Predictor(BasePredictor):
         Parameters = {
             "width": 1024,
             "height": 1024,
-            "prompt": prompt + ", (concept art), (realistic), (high detail), ((solid grey background))",
-            "negative_prompt": negative_prompt + "realistic, 3d render, photo, text, watermark, blurry, deformed, depth of field, 3d render, ((outline)), (shadow), (extra objects)",
+            "prompt": prompt + ", (concept art), (realistic:1.4), (high detail:1.4), ((solid grey background))",
+            "negative_prompt": negative_prompt + "realistic, 3d render, photo, text, watermark, blurry, deformed, depth of field, 3d render, ((outline)), (shadow), (extra objects), (comic), (chibi)",
             "num_inference_steps": num_inteference_steps,
             "guidance_scale": guidance_scale,
 
