@@ -20,6 +20,9 @@ export const env = createEnv({
     DISCORD_CLIENT_SECRET: z.string(),
     REPLICATE_API_KEY: z.string(),
     REPLICATE_MODEL_ID: z.string(),
+    STRIPE_SECRET_KEY: z.string(),
+    STRIPE_WEBHOOK_SECRET: z.string(),
+    STRIPE_PRODUCT_ID: z.string(),
   },
 
   client: {},
@@ -34,6 +37,9 @@ export const env = createEnv({
     DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
     REPLICATE_API_KEY: process.env.REPLICATE_API_KEY,
     REPLICATE_MODEL_ID: process.env.REPLICATE_MODEL_ID,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    STRIPE_PRODUCT_ID: process.env.STRIPE_PRODUCT_ID,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

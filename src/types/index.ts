@@ -10,3 +10,8 @@ export interface PredictionInput {
   poseStrength: number;
   pose_image: string;
 }
+
+export interface CheckoutSessionParams {
+  productId: string;
+  locale: string;
+}
