@@ -4,6 +4,10 @@ import { Stripe } from "stripe";
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
+const PRICE_PER_100_CREDITS = 5;
+const MINIMUM_CREDITS = 50;
+const MAXIMUM_CREDITS = 99999;
+
 export const checkoutRouter = createTRPCRouter({
   create: protectedProcedure.mutation(async ({ ctx }) => {
     const { session } = ctx;
@@ -20,9 +24,14 @@ export const checkoutRouter = createTRPCRouter({
           price_data: {
             product: env.STRIPE_PRODUCT_ID,
             currency: "usd",
-            unit_amount: 5_99,
+            unit_amount: PRICE_PER_100_CREDITS,
           },
-          quantity: 1,
+          adjustable_quantity: {
+            enabled: true,
+            minimum: MINIMUM_CREDITS,
+            maximum: MAXIMUM_CREDITS,
+          },
+          quantity: MINIMUM_CREDITS,
         },
       ],
       consent_collection: {
