@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { OpenposeEditor } from "@/components/features/generation/openpose/openpose-editor";
 import { useAppState } from "@/hooks/use-app-state";
 import { blobToBase64 } from "@/lib/utils";
-import { List } from "@/components/features/generation/list";
+import { List } from "@/components/features/generation/list/list";
 import { Navbar } from "@/components/features/layout/navbar";
 import { useSession } from "next-auth/react";
 import {

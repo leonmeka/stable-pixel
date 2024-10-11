@@ -119,7 +119,7 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
           loading={isPending}
           disabled={!form.formState.isValid || isPending || isDisabled}
         >
-          {isPending ? "Generating..." : "Generate"}
+          {isPending ? "Generating..." : "Generate (1 Credit)"}
         </Button>
       </form>
     </Form>

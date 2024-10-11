@@ -66,6 +66,17 @@ export const inferenceRouter = createTRPCRouter({
         },
       });
 
+      await db.user.update({
+        data: {
+          credits: {
+            decrement: 1,
+          },
+        },
+        where: {
+          id: ctx.session!.user.id,
+        },
+      });
+
       return prediction.id;
     }),
 
