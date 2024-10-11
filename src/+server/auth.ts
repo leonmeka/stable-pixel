@@ -102,7 +102,7 @@ export const authOptions: NextAuthOptions = {
           data: {
             name: name,
             customerId: customer.data?.data.id,
-            credits: 0,
+            credits: 10,
           },
         });
       } catch (error) {
