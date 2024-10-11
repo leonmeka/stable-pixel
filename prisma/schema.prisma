@@ -44,8 +44,8 @@ model User {
     accounts      Account[]
     sessions      Session[]
 
-    stripeCustomerId String?
-    credits          Int?
+    customerId    String?
+    credits       Int?
 
     Prediction Prediction[]
 }

@@ -13,7 +13,12 @@ export const Navbar = ({ session }: NavbarProps) => {
   const { mutateAsync, isPending } = api.checkout.create.useMutation();
 
   const handleCheckout = async () => {
+    if (!session) {
+      return;
+    }
+
     const result = await mutateAsync();
+
     window.location.href = result.url;
   };
 

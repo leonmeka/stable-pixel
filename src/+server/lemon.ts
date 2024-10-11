@@ -1,0 +1,51 @@
+import { env } from "@/env";
+import {
+  lemonSqueezySetup,
+  createCustomer,
+  createCheckout,
+  getCustomer,
+} from "@lemonsqueezy/lemonsqueezy.js";
+
+const configureLemonSqueezy = () =>
+  lemonSqueezySetup({
+    apiKey: env.LEMONSQUEEZY_API_KEY,
+    onError: (error) => {
+      throw new Error(`Lemon Squeezy API error: ${error.message}`);
+    },
+  });
+
+export async function createNewCustomer({
+  email,
+  name,
+}: {
+  email: string;
+  name: string;
+}) {
+  configureLemonSqueezy();
+
+  return await createCustomer(env.LEMONSQUEEZY_STORE_ID, {
+    email,
+    name,
+  });
+}
+
+export async function createCheckoutSession({
+  customerId,
+}: {
+  customerId: string;
+}) {
+  configureLemonSqueezy();
+
+  const customer = await getCustomer(customerId);
+
+  return await createCheckout(
+    env.LEMONSQUEEZY_STORE_ID,
+    env.LEMONSQUEEZY_MAIN_VARIANT_ID,
+    {
+      checkoutData: {
+        email: customer.data?.data.attributes.email ?? "",
+      },
+      testMode: env.NODE_ENV === "development",
+    },
+  );
+}

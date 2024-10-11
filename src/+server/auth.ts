@@ -6,18 +6,16 @@ import {
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 import DiscordProvider from "next-auth/providers/discord";
-
 import { env } from "@/env";
 import { db } from "@/+server/db";
-import Stripe from "stripe";
 import { type DefaultJWT, type JWT } from "next-auth/jwt";
 
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+import { createNewCustomer } from "./lemon";
 
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
     id: string;
-    stripeCustomerId: string;
+    customerId: string;
     credits: number;
   }
 }
@@ -26,7 +24,7 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      stripeCustomerId: string;
+      customerId: string;
       credits: number;
     } & DefaultSession["user"];
   }
@@ -53,7 +51,7 @@ export const authOptions: NextAuthOptions = {
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.image = token.picture;
-        session.user.stripeCustomerId = token.stripeCustomerId;
+        session.user.customerId = token.customerId;
         session.user.credits = token.credits;
       }
 
@@ -71,15 +69,12 @@ export const authOptions: NextAuthOptions = {
         return token;
       }
 
-      token.stripeCustomerId = dbUser.stripeCustomerId ?? "";
-      token.credits = dbUser.credits ?? 0;
-
       return {
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
         picture: dbUser.image,
-        stripeCustomerId: dbUser.stripeCustomerId ?? "",
+        customerId: dbUser.customerId,
         credits: dbUser.credits,
       } as JWT;
     },
@@ -89,11 +84,13 @@ export const authOptions: NextAuthOptions = {
       try {
         const name = user.name ?? user.email?.split("@")[0];
 
-        if (!user.email) {
+        console.log(user);
+
+        if (!user.email || !name) {
           throw new Error("Email not found");
         }
 
-        const customer = await stripe.customers.create({
+        const customer = await createNewCustomer({
           email: user.email,
           name: name,
         });
@@ -104,7 +101,7 @@ export const authOptions: NextAuthOptions = {
           },
           data: {
             name: name,
-            stripeCustomerId: customer.id,
+            customerId: customer.data?.data.id,
             credits: 0,
           },
         });
