@@ -5,10 +5,10 @@ export interface CanvasSize {
 
 export interface PredictionInput {
   prompt: string;
-  numInferenceSteps: number;
-  guidanceScale: number;
-  poseStrength: number;
+  num_inteference_steps: number;
+  guidance_scale: number;
   pose_image: string;
+  controlnet_conditioning_scale: number;
 }
 
 export interface CheckoutSessionParams {
