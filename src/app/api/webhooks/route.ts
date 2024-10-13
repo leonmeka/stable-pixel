@@ -26,7 +26,7 @@ const handleOrderCreated = async (order: Order) => {
       credits = 500;
       break;
     case Number(env.LEMONSQUEEZY_1000_VARIANT_ID):
-      credits = 1000;
+      credits = 1_000;
       break;
     default:
       throw new Error("Invalid variant ID");
@@ -34,7 +34,7 @@ const handleOrderCreated = async (order: Order) => {
 
   await db.user.update({
     where: {
-      email: email,
+      email,
     },
     data: {
       credits: {

@@ -29,7 +29,7 @@ export async function createNewCustomer({
   });
 }
 
-export async function createCheckoutSession({
+export async function createNewCheckout({
   customerId,
 }: {
   customerId: string;
@@ -37,13 +37,21 @@ export async function createCheckoutSession({
   configureLemonSqueezy();
 
   const customer = await getCustomer(customerId);
+  const email = customer.data?.data.attributes.email;
+
+  if (!email) {
+    throw new Error("No email found in customer details");
+  }
 
   return await createCheckout(
     env.LEMONSQUEEZY_STORE_ID,
     env.LEMONSQUEEZY_MAIN_VARIANT_ID,
     {
       checkoutData: {
-        email: customer.data?.data.attributes.email ?? "",
+        email,
+      },
+      productOptions: {
+        redirectUrl: env.NEXTAUTH_URL,
       },
       testMode: env.NODE_ENV === "development",
     },

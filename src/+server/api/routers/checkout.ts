@@ -1,5 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "@/+server/api/trpc";
-import { createCheckoutSession } from "@/+server/lemon";
+import { createNewCheckout } from "@/+server/lemon";
 
 export const checkoutRouter = createTRPCRouter({
   create: protectedProcedure.mutation(async ({ ctx }) => {
@@ -9,7 +9,7 @@ export const checkoutRouter = createTRPCRouter({
       throw new Error("User not found");
     }
 
-    const checkoutSession = await createCheckoutSession({
+    const checkoutSession = await createNewCheckout({
       customerId: session.user.customerId,
     });
 
