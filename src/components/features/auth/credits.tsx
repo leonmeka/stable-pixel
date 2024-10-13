@@ -9,6 +9,11 @@ interface CreditsProps {
 export const Credits = ({ session }: CreditsProps) => {
   const { mutateAsync, isPending } = api.checkout.create.useMutation();
 
+  const hasCredits = session?.user.credits ?? 0 > 0;
+  const text = hasCredits
+    ? `Credits (${session?.user.credits})`
+    : "Get Credits";
+
   const handleCheckout = async () => {
     if (!session) {
       return;
@@ -21,7 +26,7 @@ export const Credits = ({ session }: CreditsProps) => {
 
   return (
     <Button loading={isPending} onClick={handleCheckout}>
-      Buy Credits ({session?.user.credits ?? 0})
+      {text}
     </Button>
   );
 };

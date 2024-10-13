@@ -1,6 +1,6 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { type PredictionInput } from "@/types";
-import { Loader2 } from "lucide-react";
+import { Loader2, Timer } from "lucide-react";
 import { type Prediction } from "replicate";
 
 interface ListItemProps {
@@ -9,6 +9,26 @@ interface ListItemProps {
 }
 
 export const ListItem = ({ item, onImageClick }: ListItemProps) => {
+  const timeRemaining = () => {
+    if (!item.completed_at) {
+      return (
+        <span className="text-xs text-muted-foreground">processing...</span>
+      );
+    }
+
+    const createdAt = new Date(item.completed_at);
+    const now = new Date();
+    const differenceInMs = createdAt.getTime() + 3600000 - now.getTime();
+    const differenceInMinutes = Math.floor(differenceInMs / 60000);
+
+    return (
+      <span className="flex items-center text-xs text-muted-foreground">
+        <Timer size={14} className="mr-2" />
+        {`expires in ${differenceInMinutes} minutes`}
+      </span>
+    );
+  };
+
   return (
     <Card className="border-none">
       <CardContent className="p-2">
@@ -27,10 +47,16 @@ export const ListItem = ({ item, onImageClick }: ListItemProps) => {
           </div>
         )}
       </CardContent>
-      <CardFooter className="grid p-2">
+      <CardFooter className="grid gap-2 p-2">
         <p className="text-xs text-muted-foreground">
           {(item.input as PredictionInput).prompt}
         </p>
+        <hr />
+
+        <span className="flex items-center text-xs text-muted-foreground">
+          <Timer size={14} className="mr-2" />
+          {timeRemaining()}
+        </span>
       </CardFooter>
     </Card>
   );

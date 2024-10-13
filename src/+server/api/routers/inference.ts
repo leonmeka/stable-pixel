@@ -9,21 +9,6 @@ const replicate = new Replicate({
   auth: env.REPLICATE_API_KEY,
 });
 
-const ttlHasExpired = (timestamp?: string) => {
-  if (!timestamp) {
-    return true;
-  }
-
-  const expires = 7 * 24 * 60 * 60; // 7 days
-  const now = Date.now();
-
-  const startedAt = new Date(timestamp).getTime();
-  const elapsed = now - startedAt;
-  const elapsedSeconds = elapsed / 1000;
-
-  return elapsedSeconds <= expires;
-};
-
 export const inferenceRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
@@ -61,8 +46,8 @@ export const inferenceRouter = createTRPCRouter({
 
       await db.prediction.create({
         data: {
-          predictionId: prediction.id,
           userId: ctx.session.user.id,
+          predictionId: prediction.id,
         },
       });
 
@@ -101,7 +86,7 @@ export const inferenceRouter = createTRPCRouter({
         return false;
       }
 
-      return ttlHasExpired(item.completed_at);
+      return true;
     });
 
     return filtered;

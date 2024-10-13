@@ -65,4 +65,5 @@ model Prediction{
     userId String
 
     predictionId String
+    image String?
 }
