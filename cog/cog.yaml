@@ -17,6 +17,7 @@ build:
     - "sentencepiece==0.2.0"
     - "protobuf==5.28.2"
     - "peft==0.13.0"
+    - "imagequant==1.1.1"
 
 predict: "predict.py:Predictor"
 image: "r8.im/leonmeka/stable-pixel"

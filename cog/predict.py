@@ -1,9 +1,8 @@
 import torch
 import os
-from PIL import Image
 import base64
 from io import BytesIO
-import time
+from PIL import Image
 
 from cog import BasePredictor, Input
 
@@ -19,8 +18,8 @@ from diffusers import (
     DPMSolverMultistepScheduler,
 )
 
-from classes.image_resizer import ImageResizer
-from classes.image_pixelator import ImagePixelator
+from classes.helpers.image_resizer import ImageResizer
+from classes.post_processor import PostProcessor
 from classes.r2_uploader import R2Uploader
 
 MODEL_ID = "John6666/super-pixelart-xl-m-v1-v10-sdxl"
@@ -42,7 +41,7 @@ class Predictor(BasePredictor):
     def __init__(self):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.image_resizer = ImageResizer()
-        self.image_pixelator = ImagePixelator()      
+        self.post_processor = PostProcessor()
         self.r2_uploader = R2Uploader(
             access_key="b75696732e4485af41d26ff6c3cd5896",
             secret_key="07190fdc199cb937d54d42ad3c4f93b89c5fc4627dc2af8d1b75e6c9fc048776",
@@ -105,15 +104,18 @@ class Predictor(BasePredictor):
         seed = int.from_bytes(os.urandom(2), "big")
         generator = torch.Generator("cuda").manual_seed(seed)
 
+        # Load the pose image
         if pose_image:
             pose_image = Image.open(BytesIO(base64.b64decode(pose_image))).convert("RGB")
 
-            # Flip the red and blue channels
+            # Flip the red and blue channels 
+            # Hint: this is due to the way the model was trained, see https://www.reddit.com/r/StableDiffusion/comments/1f854k3/psa_fixing_sdxl_t2iadapter_openpose/)
             r, g, b = pose_image.split()
             pose_image = Image.merge("RGB", (b, g, r))
             
             pose_image = self.image_resizer.resize(pose_image, 1024, 1024)
 
+        # Generate the image
         Parameters = {
             "width": 1024,
             "height": 1024,
@@ -128,52 +130,15 @@ class Predictor(BasePredictor):
             "generator": generator,
             "num_images_per_prompt": 1
         }
-
         self.pipe.scheduler = use_scheduler(scheduler, self.pipe.scheduler.config)
-        pipe_output = self.pipe(
+        image = self.pipe(
             **Parameters
-        )
+        ).images[0]
 
-        image = pipe_output.images[0]
+        # Apply post-processing
+        output = self.post_processor.process(image)
 
-        performance = {}
-
-        # 1024x1024 -> 8.192x8.192
-        start_time = time.time()
-        image = self.image_resizer.resize(image, 8192, 8192)
-        performance["Resizing (8192x8192)"] = (time.time() - start_time) * 1000
-
-        # Detect pixel scale and downscale the image
-        start_time = time.time()
-        downscaled_image, hspacing, vspacing  = self.image_pixelator.pixel_detect(image)
-        performance["Detecting Pixel Scale"] = (time.time() - start_time) * 1000
-
-        # Determine the best number of colors for the downscaled image
-        start_time = time.time()
-        best_k = self.image_pixelator.determine_best_k(downscaled_image, max_k=16)
-        performance["Determining Best K"] = (time.time() - start_time) * 1000
-
-        # Quantize the downscaled image to the best number of colors
-        start_time = time.time()
-        quantized_image = downscaled_image.quantize(colors=best_k, method=1, kmeans=best_k, dither=0).convert('RGB')
-        performance["Quantizing"] = (time.time() - start_time) * 1000
-
-        # Pixelate the quantized image
-        start_time = time.time()
-        pixelated_image = self.image_pixelator.pixelate(quantized_image, max_colors=best_k, pixel_size=round(hspacing))
-        performance["Pixelating"] = (time.time() - start_time) * 1000
-
-        # 5.120x5.120 -> 256x256
-        start_time = time.time()
-        output = self.image_resizer.resize(pixelated_image, 256, 256)
-        performance["Resizing (256x256)"] = (time.time() - start_time) * 1000
-
-        start_time = time.time()
+        # Upload the image to R2
         file_url = self.r2_uploader.upload_image(output)
-        performance["Uploading"] = (time.time() - start_time) * 1000
-
-        # Log the performance table in milliseconds
-        for step, duration in performance.items():
-            print(f"{step}: {duration:.2f} ms")
 
         return file_url

@@ -1,3 +1,6 @@
 __pycache__
 .cog
 diffusers-cache
+
+# Test files
+**.png
