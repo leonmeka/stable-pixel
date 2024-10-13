@@ -42,7 +42,7 @@ export default function Home() {
     },
   });
 
-  const hasCredits = session ? session.user.credits > 0 : false;
+  const isAuthorized = session ? session.user.credits > 0 : false;
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden">
@@ -65,7 +65,7 @@ export default function Home() {
                 });
               }}
               isPending={isPending}
-              isDisabled={!pose || !hasCredits}
+              isDisabled={!pose || !isAuthorized}
             />
           </div>
 

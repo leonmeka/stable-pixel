@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { Card, CardContent } from "@/components/ui/card";
 
 interface OutputProps {
@@ -19,7 +18,7 @@ export const Output = ({ src }: OutputProps) => {
           <img
             src={src}
             alt={"generated image"}
-            className="rendering-pixelated absolute inset-0 m-auto h-full w-full object-contain"
+            className="absolute inset-0 m-auto h-full w-full object-contain rendering-pixelated"
           />
         )}
       </CardContent>

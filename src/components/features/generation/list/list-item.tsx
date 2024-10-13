@@ -1,7 +1,6 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { type PredictionInput } from "@/types";
 import { Loader2 } from "lucide-react";
-import Image from "next/image";
 import { type Prediction } from "replicate";
 
 interface ListItemProps {
@@ -14,7 +13,7 @@ export const ListItem = ({ item, onImageClick }: ListItemProps) => {
     <Card className="border-none">
       <CardContent className="p-2">
         {item.status === "succeeded" ? (
-          <Image
+          <img
             src={item.output as string}
             alt={(item.input as PredictionInput).prompt}
             onClick={() =>

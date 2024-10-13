@@ -3,14 +3,8 @@ import { createNewCheckout } from "@/+server/lemon";
 
 export const checkoutRouter = createTRPCRouter({
   create: protectedProcedure.mutation(async ({ ctx }) => {
-    const { session } = ctx;
-
-    if (!session.user) {
-      throw new Error("User not found");
-    }
-
     const checkoutSession = await createNewCheckout({
-      customerId: session.user.customerId,
+      customerId: ctx.session.user.customerId,
     });
 
     const url = checkoutSession.data?.data.attributes.url;

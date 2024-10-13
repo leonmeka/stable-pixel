@@ -29,7 +29,7 @@ const ttlHasExpired = (timestamp?: string) => {
 };
 
 export const inferenceRouter = createTRPCRouter({
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         prompt: z.string(),
@@ -40,6 +40,10 @@ export const inferenceRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      if (ctx.session.user.credits <= 0) {
+        throw new Error("Insufficient credits");
+      }
+
       const identifier = env.REPLICATE_MODEL_ID;
       const model = identifier.split("/")[1] as never;
       const version = identifier.split(":")[1];
@@ -62,7 +66,7 @@ export const inferenceRouter = createTRPCRouter({
       await db.prediction.create({
         data: {
           predictionId: prediction.id,
-          userId: ctx.session!.user.id,
+          userId: ctx.session.user.id,
         },
       });
 
@@ -73,7 +77,7 @@ export const inferenceRouter = createTRPCRouter({
           },
         },
         where: {
-          id: ctx.session!.user.id,
+          id: ctx.session.user.id,
         },
       });
 

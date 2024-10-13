@@ -15,9 +15,9 @@ import { Input } from "@/components/ui/input";
 
 const SCHEMA = z.object({
   prompt: z.string().min(5),
-  numInferenceSteps: z.number().min(0).max(60),
-  guidanceScale: z.number().min(0).max(12),
-  poseStrength: z.number().min(0).max(2),
+  numInferenceSteps: z.number().min(5).max(10),
+  guidanceScale: z.number().min(1).max(2),
+  poseStrength: z.number().min(0).max(1),
 });
 
 interface PromptProps {
