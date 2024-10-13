@@ -27,7 +27,7 @@ export default function Home() {
   const { inference } = api.useUtils();
   const { mutateAsync, isPending } = api.inference.create.useMutation({
     onSuccess: async () => {
-      toast("Image is generating...", {
+      toast("Image generation started...", {
         position: "top-right",
         duration: 1500,
       });

@@ -117,7 +117,7 @@ class ImagePixelator:
         vspacing = np.diff(vpeaks)
 
         # Resize input image using kCentroid with the calculated horizontal and vertical factors
-        return np.median(hspacing), np.median(vspacing)
+        return ImagePixelator.kCentroid(image, round(image.width / np.median(hspacing)), round(image.height / np.median(vspacing)), 2), np.median(hspacing), np.median(vspacing)
 
     @staticmethod
     def determine_best_k(image: Image, max_k: int):
