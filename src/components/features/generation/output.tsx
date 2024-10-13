@@ -17,6 +17,8 @@ export const Output = ({ src }: OutputProps) => {
         {src && (
           <img
             src={src}
+            width={256}
+            height={256}
             alt={"generated image"}
             className="absolute inset-0 m-auto h-full w-full object-contain rendering-pixelated"
           />

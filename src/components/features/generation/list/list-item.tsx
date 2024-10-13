@@ -9,25 +9,10 @@ interface ListItemProps {
 }
 
 export const ListItem = ({ item, onImageClick }: ListItemProps) => {
-  const timeRemaining = () => {
-    if (!item.completed_at) {
-      return (
-        <span className="text-xs text-muted-foreground">processing...</span>
-      );
-    }
-
-    const createdAt = new Date(item.completed_at);
-    const now = new Date();
-    const differenceInMs = createdAt.getTime() + 3600000 - now.getTime();
-    const differenceInMinutes = Math.floor(differenceInMs / 60000);
-
-    return (
-      <span className="flex items-center text-xs text-muted-foreground">
-        <Timer size={14} className="mr-2" />
-        {`expires in ${differenceInMinutes} minutes`}
-      </span>
-    );
-  };
+  const createdAt = new Date(item.completed_at ?? item.created_at);
+  const now = new Date();
+  const differenceInMs = createdAt.getTime() + 3600000 - now.getTime();
+  const differenceInMinutes = Math.floor(differenceInMs / 60000);
 
   return (
     <Card className="border-none">
@@ -36,6 +21,8 @@ export const ListItem = ({ item, onImageClick }: ListItemProps) => {
           <img
             src={item.output as string}
             alt={(item.input as PredictionInput).prompt}
+            width={256}
+            height={256}
             onClick={() =>
               onImageClick(item.input as PredictionInput, item.output as string)
             }
@@ -51,12 +38,19 @@ export const ListItem = ({ item, onImageClick }: ListItemProps) => {
         <p className="text-xs text-muted-foreground">
           {(item.input as PredictionInput).prompt}
         </p>
+
         <hr />
 
-        <span className="flex items-center text-xs text-muted-foreground">
-          <Timer size={14} className="mr-2" />
-          {timeRemaining()}
-        </span>
+        {item.status === "succeeded" ? (
+          <span className="flex items-center text-xs text-muted-foreground">
+            <Timer size={14} className="mr-2" />
+            {`expires in ${differenceInMinutes} minutes`}
+          </span>
+        ) : (
+          <span className="flex items-center text-xs text-muted-foreground">
+            <Loader2 size={14} className="mr-2 animate-spin" />
+          </span>
+        )}
       </CardFooter>
     </Card>
   );

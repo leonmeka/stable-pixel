@@ -9,6 +9,21 @@ const replicate = new Replicate({
   auth: env.REPLICATE_API_KEY,
 });
 
+const ttlHasExpired = (timestamp?: string) => {
+  if (!timestamp) {
+    return true;
+  }
+
+  const expires = 60 * 60 * 1000; // 1 hour
+  const now = Date.now();
+
+  const startedAt = new Date(timestamp).getTime();
+  const elapsed = now - startedAt;
+  const elapsedSeconds = elapsed;
+
+  return elapsedSeconds <= expires;
+};
+
 export const inferenceRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
@@ -83,6 +98,10 @@ export const inferenceRouter = createTRPCRouter({
       }
 
       if (["failed", "canceled"].includes(item.status)) {
+        return false;
+      }
+
+      if (!ttlHasExpired(item.created_at)) {
         return false;
       }
 
