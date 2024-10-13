@@ -7,7 +7,6 @@ import { Prompt } from "@/components/features/generation/prompt";
 import { Output } from "@/components/features/generation/output";
 import { Toaster } from "@/components/ui/sonner";
 import { OpenposeEditor } from "@/components/features/generation/openpose/openpose-editor";
-import { useAppState } from "@/hooks/use-app-state";
 import { blobToBase64 } from "@/lib/utils";
 import { List } from "@/components/features/generation/list/list";
 import { Navbar } from "@/components/features/layout/navbar";
@@ -17,10 +16,13 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "@/components/ui/resizable";
+import { useState } from "react";
 
 export default function Home() {
   const { data: session } = useSession();
-  const { image, setImage, pose } = useAppState();
+
+  const [pose, setPose] = useState<Blob | null>(null);
+  const [image, setImage] = useState<string | null>(null);
 
   const { inference } = api.useUtils();
   const { mutateAsync, isPending } = api.inference.create.useMutation({
@@ -78,7 +80,7 @@ export default function Home() {
             <ResizableHandle withHandle />
 
             <ResizablePanel defaultSize={50}>
-              <OpenposeEditor />
+              <OpenposeEditor onPoseChange={setPose} />
             </ResizablePanel>
           </ResizablePanelGroup>
 

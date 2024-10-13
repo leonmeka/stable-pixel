@@ -11,10 +11,13 @@ import { debounce } from "lodash";
 import { type CanvasSize } from "@/types";
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "lucide-react";
-import { useAppState } from "@/hooks/use-app-state";
 
-export const OpenposeEditor = () => {
-  const { pose, setPose } = useAppState();
+interface OpenposeEditorProps {
+  onPoseChange: (pose: Blob) => void;
+}
+
+export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
+  const [pose, setPose] = useState<Blob | null>(null);
 
   const [vertices, setVertices] = useState<VerticesState>(initialVertices);
   const [draggingVertex, setDraggingVertex] = useState<string | null>(null);
@@ -97,6 +100,9 @@ export const OpenposeEditor = () => {
       offscreenCanvas.toBlob((blob) => {
         if (!blob) return;
         setPose(blob);
+
+        console.log("Blob created", blob);
+        onPoseChange(blob);
       }, "image/png");
     };
 
@@ -107,6 +113,11 @@ export const OpenposeEditor = () => {
 
     img.src = url;
   }, 500);
+
+  useEffect(() => {
+    void handleCapture();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const updateCanvasSize = () => {

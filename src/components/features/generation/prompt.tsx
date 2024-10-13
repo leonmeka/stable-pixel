@@ -60,7 +60,6 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
           <FormField
             control={form.control}
             name="numInferenceSteps"
-            disabled
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Inference Steps</FormLabel>
@@ -79,7 +78,6 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
           <FormField
             control={form.control}
             name="guidanceScale"
-            disabled
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Guidance Scale</FormLabel>
@@ -98,7 +96,6 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
           <FormField
             control={form.control}
             name="poseStrength"
-            disabled
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Pose Strength</FormLabel>
