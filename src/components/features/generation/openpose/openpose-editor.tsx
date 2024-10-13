@@ -17,22 +17,22 @@ interface OpenposeEditorProps {
 }
 
 export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
-  const [pose, setPose] = useState<Blob | null>(null);
-
-  const [vertices, setVertices] = useState<VerticesState>(initialVertices);
-  const [draggingVertex, setDraggingVertex] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const [pose, setPose] = useState<Blob | null>(null);
+  const [vertices, setVertices] = useState<VerticesState>(initialVertices);
+  const [draggingVertex, setDraggingVertex] = useState<string | null>(null);
   const [canvasSize, setCanvasSize] = useState<CanvasSize>({
-    width: 0,
-    height: 0,
+    width: 1024,
+    height: 1024,
   });
 
   const handleMouseDown = (e: React.MouseEvent, vertexName: string) => {
     setDraggingVertex(vertexName);
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = (e: React.MouseEvent) => {
     if (!draggingVertex || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
@@ -63,10 +63,15 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
   };
 
   const handleCapture = debounce(() => {
-    if (!canvasRef.current || !containerRef.current) return;
+    if (!containerRef.current) {
+      return;
+    }
 
     const svgElement = containerRef.current.querySelector("svg");
-    if (!svgElement) return;
+
+    if (!svgElement) {
+      return;
+    }
 
     // Serialize the SVG into a string
     const svgData = new XMLSerializer().serializeToString(svgElement);
@@ -84,40 +89,41 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
       offscreenCanvas.height = 1024;
 
       const ctx = offscreenCanvas.getContext("2d");
-      if (!ctx) return;
 
-      // Clear canvas before drawing
+      if (!ctx) {
+        return;
+      }
+
+      // Clear the canvas before drawing
       ctx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
 
-      // Fill canvas with black background
+      // Fill the canvas with a black background
       ctx.fillStyle = "black";
       ctx.fillRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
 
-      // Draw the image on the canvas with proper scaling
+      // Draw the loaded image onto the canvas
       ctx.drawImage(img, 0, 0, offscreenCanvas.width, offscreenCanvas.height);
 
+      // Convert the canvas to a Blob (image)
       offscreenCanvas.toBlob((blob) => {
-        if (!blob) return;
+        if (!blob) {
+          return;
+        }
+
         setPose(blob);
         onPoseChange(blob);
 
-        // Revoke the URL to prevent memory leaks
         URL.revokeObjectURL(url);
       }, "image/png");
     };
 
     img.onerror = () => {
+      console.error("Failed to load SVG as an image.");
       URL.revokeObjectURL(url);
-      console.error("Failed to load SVG as image");
     };
 
     img.src = url;
   }, 500);
-
-  useEffect(() => {
-    void handleCapture();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleResize = debounce(() => {
     if (containerRef.current) {
@@ -128,6 +134,13 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
     }
   }, 500);
 
+  // Capture the initial pose
+  useEffect(() => {
+    void handleCapture();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Resize observer
   useEffect(() => {
     const observer = new ResizeObserver(handleResize);
 
@@ -140,25 +153,12 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
         observer.unobserve(containerRef.current);
       }
     };
-  }, []);
-
-  useEffect(() => {
-    const handleMove = (e: MouseEvent) => handleMouseMove(e);
-    const handleUp = () => handleMouseUp();
-
-    window.addEventListener("mousemove", handleMove);
-    window.addEventListener("mouseup", handleUp);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMove);
-      window.removeEventListener("mouseup", handleUp);
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draggingVertex]);
+  }, []);
 
   return (
     <div
-      className="relative flex aspect-square h-full w-full select-none items-center justify-center"
+      className="relative flex h-full w-full select-none items-center justify-center"
       ref={containerRef}
     >
       <canvas
@@ -171,6 +171,7 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
       <svg
         viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
         className="absolute aspect-square h-full bg-black/25"
+        onMouseMove={handleMouseMove}
       >
         {edgesData.map((edge) => (
           <CanvasEdge
@@ -187,8 +188,8 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
             canvasSize={canvasSize}
             position={vertices[vertex.name]!}
             isGrabbed={draggingVertex === vertex.name}
-            onDrag={(e) => handleMouseDown(e, vertex.name)}
             onMouseUp={handleMouseUp}
+            onDrag={(e) => handleMouseDown(e, vertex.name)}
             style={vertex.style}
           />
         ))}

@@ -30,7 +30,7 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
   const form = useForm<z.infer<typeof SCHEMA>>({
     resolver: zodResolver(SCHEMA),
     defaultValues: {
-      prompt: "A generic man",
+      prompt: "A generic character",
       numInferenceSteps: 10,
       guidanceScale: 1.5,
       poseStrength: 1,

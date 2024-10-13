@@ -46,7 +46,7 @@ export const ListItem = ({ item, onImageClick }: ListItemProps) => {
         {item.status === "succeeded" ? (
           <span className="flex items-center text-xs text-muted-foreground">
             <Timer size={14} className="mr-2" />
-            {`expires in ${differenceInMinutes} minutes`}
+            {`expires in ${differenceInMinutes} minute(s)`}
           </span>
         ) : (
           <span className="flex items-center text-xs text-muted-foreground">
