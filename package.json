@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "db:up": "./start-database.sh",
+    "db:up": "dockerize-db.sh",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "cog:run": "cd cog && cog run predict",
@@ -52,8 +52,7 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.3",
-    "zod-form-data": "^2.0.2",
-    "zustand": "5.0.0-rc.2"
+    "zod-form-data": "^2.0.2"
   },
   "devDependencies": {
     "@types/eslint": "^8.56.10",

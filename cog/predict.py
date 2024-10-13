@@ -1,3 +1,4 @@
+import time
 import torch
 import os
 from PIL import Image
@@ -135,30 +136,43 @@ class Predictor(BasePredictor):
 
         image = pipe_output.images[0]
 
-        # 1024x1024 -> 8.192x8.192
-        image = self.image_resizer.resize(image, 8192, 8192)
-        print("image resized")
+        # Initialize performance dictionary
+        performance = {}
 
-        # Detect pixel scale and downscale the image
-        downscaled_image, hspacing, vspacing  = self.image_pixelator.pixel_detect(image)
-        print("image pixelated")
+        # 1024x1024 -> 8.192x8.192
+        start_time = time.time()
+        image = self.image_resizer.resize(image, 8192, 8192)
+        performance["Resizing"] = (time.time() - start_time) * 1000
+
+        # Detect pixel scale and spacing
+        start_time = time.time()
+        hspacing, vspacing  = self.image_pixelator.pixel_detect(image)
+        performance["Pixel Detection"] = (time.time() - start_time) * 1000
 
         # Determine the best number of colors for palette reduction
-        best_k = self.image_pixelator.determine_best_k(downscaled_image, max_k=16)
-        print("best k determined")
+        start_time = time.time()
+        best_k = self.image_pixelator.determine_best_k(image, max_k=16)
+        performance["Color Palette Detection"] = (time.time() - start_time) * 1000
 
         # Quantize the downscaled image to the best number of colors
-        quantized_image = downscaled_image.quantize(colors=best_k, method=1, kmeans=best_k, dither=0).convert('RGB')
-        print("image quantized")
+        start_time = time.time()
+        quantized_image = image.quantize(colors=best_k, method=1, kmeans=best_k, dither=0).convert('RGB')
+        performance["Quantization"] = (time.time() - start_time) * 1000
 
         # Pixelate the quantized image
+        start_time = time.time()
         pixelated_image = self.image_pixelator.pixelate(quantized_image, max_colors=best_k, pixel_size=round(hspacing))
-        print("image pixelated")
+        performance["Pixelation"] = (time.time() - start_time) * 1000
 
         # 5.120x5.120 -> 256x256
+        start_time = time.time()
         output = self.image_resizer.resize(pixelated_image, 256, 256)
-        print("image resized")
+        performance["Resizing"] = (time.time() - start_time) * 1000
 
         file_url = self.r2_uploader.upload_image(output)
+
+        # Log the performance table in milliseconds
+        for step, duration in performance.items():
+            print(f"{step}: {duration:.2f} ms")
 
         return file_url
