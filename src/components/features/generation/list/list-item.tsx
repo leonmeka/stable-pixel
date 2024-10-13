@@ -15,7 +15,9 @@ export const ListItem = ({ item, onImageClick }: ListItemProps) => {
   const differenceInMinutes = Math.floor(differenceInMs / 60000);
 
   return (
-    <Card className="border-none">
+    <Card
+      className={`border-none ${item.status === "succeeded" ? "" : "animate-pulse"}`}
+    >
       <CardContent className="p-2">
         {item.status === "succeeded" ? (
           <img
@@ -29,7 +31,7 @@ export const ListItem = ({ item, onImageClick }: ListItemProps) => {
             className="aspect-square cursor-pointer outline outline-2 outline-muted-foreground rendering-pixelated hover:outline-primary"
           />
         ) : (
-          <div className="grid aspect-square animate-pulse items-center justify-center bg-muted">
+          <div className="grid aspect-square items-center justify-center bg-muted">
             <Loader2 size={32} className="animate-spin text-muted-foreground" />
           </div>
         )}
@@ -49,6 +51,7 @@ export const ListItem = ({ item, onImageClick }: ListItemProps) => {
         ) : (
           <span className="flex items-center text-xs text-muted-foreground">
             <Loader2 size={14} className="mr-2 animate-spin" />
+            Generating...
           </span>
         )}
       </CardFooter>

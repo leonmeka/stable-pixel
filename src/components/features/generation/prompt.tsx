@@ -12,7 +12,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Sparkles } from "lucide-react";
 
 const SCHEMA = z.object({
   prompt: z.string().min(5),
@@ -125,7 +124,6 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
             loading={isPending}
             disabled={!form.formState.isValid || isPending || isDisabled}
           >
-            <Sparkles size={16} />
             {isPending ? "Starting..." : "Generate (1 Credit)"}
           </Button>
         </div>

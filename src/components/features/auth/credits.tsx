@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
+import { Coins } from "lucide-react";
 import { type Session } from "next-auth";
 
 interface CreditsProps {
@@ -26,6 +27,7 @@ export const Credits = ({ session }: CreditsProps) => {
 
   return (
     <Button loading={isPending} onClick={handleCheckout}>
+      <Coins size={16} />
       {text}
     </Button>
   );

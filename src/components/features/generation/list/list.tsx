@@ -14,7 +14,7 @@ export const List = ({ onImageClick }: ListProps) => {
     undefined,
     {
       enabled: session.status === "authenticated",
-      refetchInterval: 10_000,
+      refetchInterval: 5_000,
     },
   );
 
