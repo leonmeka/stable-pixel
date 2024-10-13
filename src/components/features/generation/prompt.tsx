@@ -11,13 +11,23 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
+
+const numInferenceStepsMIN = 5;
+const numInferenceStepsMAX = 10;
+const guidanceScaleMIN = 1;
+const guidanceScaleMAX = 2;
+const poseStrengthMIN = 0.5;
+const poseStrengthMAX = 1.5;
 
 const SCHEMA = z.object({
   prompt: z.string().min(5),
-  numInferenceSteps: z.number().min(5).max(10),
-  guidanceScale: z.number().min(1).max(2),
-  poseStrength: z.number().min(0).max(1),
+  numInferenceSteps: z
+    .number()
+    .min(numInferenceStepsMIN)
+    .max(numInferenceStepsMAX),
+  guidanceScale: z.number().min(guidanceScaleMIN).max(guidanceScaleMAX),
+  poseStrength: z.number().min(poseStrengthMIN).max(poseStrengthMAX),
 });
 
 interface PromptProps {
@@ -64,11 +74,14 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
               <FormItem>
                 <FormLabel>Inference Steps</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    type="number"
-                    placeholder="Enter number of inference steps..."
-                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  <Slider
+                    defaultValue={[field.value]}
+                    min={numInferenceStepsMIN}
+                    max={numInferenceStepsMAX}
+                    step={0.1}
+                    onValueChange={(vals) => {
+                      field.onChange(vals[0]);
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -82,11 +95,14 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
               <FormItem>
                 <FormLabel>Guidance Scale</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    type="number"
-                    placeholder="Enter guidance scale..."
-                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  <Slider
+                    defaultValue={[field.value]}
+                    min={guidanceScaleMIN}
+                    max={guidanceScaleMAX}
+                    step={0.1}
+                    onValueChange={(vals) => {
+                      field.onChange(vals[0]);
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -100,11 +116,14 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
               <FormItem>
                 <FormLabel>Pose Strength</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    type="number"
-                    placeholder="Enter pose strength..."
-                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  <Slider
+                    defaultValue={[field.value]}
+                    min={poseStrengthMIN}
+                    max={poseStrengthMAX}
+                    step={0.1}
+                    onValueChange={(vals) => {
+                      field.onChange(vals[0]);
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
