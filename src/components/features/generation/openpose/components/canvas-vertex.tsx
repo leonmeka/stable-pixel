@@ -5,6 +5,7 @@ import { type CanvasSize } from "@/types";
 interface CanvasVertexProps {
   canvasSize: CanvasSize;
   position: Position;
+  isGrabbed: boolean;
   onDrag: (e: React.MouseEvent) => void;
   onMouseUp: () => void;
   style: React.CSSProperties;
@@ -13,6 +14,7 @@ interface CanvasVertexProps {
 export const CanvasVertex = ({
   canvasSize,
   position,
+  isGrabbed,
   onDrag,
   onMouseUp,
   style,
@@ -20,11 +22,14 @@ export const CanvasVertex = ({
   const x = (position.left / 100) * canvasSize.width;
   const y = (position.top / 100) * canvasSize.height;
 
+  const radius = canvasSize.width / 100;
+
   return (
     <circle
       cx={x}
       cy={y}
-      r={3}
+      r={radius}
+      cursor={`${isGrabbed ? "grabbing" : "grab"}`}
       fill={style.backgroundColor}
       onMouseDown={onDrag}
       onMouseUp={onMouseUp}

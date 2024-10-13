@@ -35,20 +35,19 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
   const handleMouseMove = (e: MouseEvent) => {
     if (!draggingVertex || !canvasRef.current) return;
 
-    const rect = canvasRef.current.getBoundingClientRect();
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
 
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = ((e.clientX - rect.left) / canvasSize.width) * 100;
+    const y = ((e.clientY - rect.top) / canvasSize.height) * 100;
 
     setVertices((prev) => {
-      const newVertex = {
-        left: (x / rect.width) * 100,
-        top: (y / rect.height) * 100,
-      };
-
       return {
         ...prev,
-        [draggingVertex]: newVertex,
+        [draggingVertex]: {
+          left: x,
+          top: y,
+        },
       };
     });
   };
@@ -100,9 +99,10 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
       offscreenCanvas.toBlob((blob) => {
         if (!blob) return;
         setPose(blob);
-
-        console.log("Blob created", blob);
         onPoseChange(blob);
+
+        // Revoke the URL to prevent memory leaks
+        URL.revokeObjectURL(url);
       }, "image/png");
     };
 
@@ -119,18 +119,27 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleResize = debounce(() => {
+    if (containerRef.current) {
+      const { clientWidth, clientHeight } = containerRef.current;
+      const size = Math.min(clientWidth, clientHeight);
+
+      setCanvasSize({ width: size, height: size });
+    }
+  }, 500);
+
   useEffect(() => {
-    const updateCanvasSize = () => {
+    const observer = new ResizeObserver(handleResize);
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
       if (containerRef.current) {
-        const { clientWidth, clientHeight } = containerRef.current;
-        const size = Math.min(clientWidth, clientHeight);
-        setCanvasSize({ width: size, height: size });
+        observer.unobserve(containerRef.current);
       }
     };
-
-    updateCanvasSize();
-    window.addEventListener("resize", updateCanvasSize);
-    return () => window.removeEventListener("resize", updateCanvasSize);
   }, []);
 
   useEffect(() => {
@@ -149,18 +158,19 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
 
   return (
     <div
-      className="relative flex h-full w-full items-center justify-center"
+      className="relative flex aspect-square h-full w-full select-none items-center justify-center"
       ref={containerRef}
     >
       <canvas
         ref={canvasRef}
         width={canvasSize.width}
         height={canvasSize.height}
-        className="absolute inset-0 h-full w-full"
+        className="absolute aspect-square"
       />
+
       <svg
         viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
-        className="absolute inset-0 h-full w-full"
+        className="absolute aspect-square h-full bg-black/25"
       >
         {edgesData.map((edge) => (
           <CanvasEdge
@@ -176,6 +186,7 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
             key={vertex.name}
             canvasSize={canvasSize}
             position={vertices[vertex.name]!}
+            isGrabbed={draggingVertex === vertex.name}
             onDrag={(e) => handleMouseDown(e, vertex.name)}
             onMouseUp={handleMouseUp}
             style={vertex.style}
@@ -190,7 +201,7 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
           onClick={handleReset}
           disabled={!pose || vertices === initialVertices}
         >
-          <TrashIcon className="h-4 w-4" />
+          <TrashIcon size={16} />
         </Button>
       </div>
     </div>
