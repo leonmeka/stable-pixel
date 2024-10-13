@@ -1,5 +1,4 @@
 import time
-import numpy as np
 from PIL import Image
 
 from .helpers.image_resizer import ImageResizer

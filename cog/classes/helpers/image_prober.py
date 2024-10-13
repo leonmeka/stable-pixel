@@ -1,6 +1,7 @@
-from PIL import Image
 import numpy as np
 import scipy
+from PIL import Image
+from sklearn.decomposition import PCA
 from concurrent.futures import ThreadPoolExecutor
 
 class ImageProber:
@@ -30,27 +31,48 @@ class ImageProber:
         return int(max(np.median(hspacing), np.median(vspacing)) + padding)
 
     @staticmethod
-    def get_best_k(image: Image, max_k: int) -> int:
+    def get_best_k(image: Image, max_k: int, pca_components: int = 1) -> int:
         image = image.convert("RGB")
         pixels = np.array(image)
         pixel_indices = np.reshape(pixels, (-1, 3))
 
-        def calc_distortion(k):
+        # Apply PCA to reduce dimensions once for all pixels
+        pca = PCA(n_components=pca_components)
+        pixel_indices_pca = pca.fit_transform(pixel_indices)
+
+        # Optimized quantization function
+        def batch_quantize(k):
             quantized_image = image.quantize(colors=k, method=0, kmeans=k, dither=0)
             centroids = np.array(quantized_image.getpalette()[:k * 3]).reshape(-1, 3)
-            distances = np.linalg.norm(pixel_indices[:, np.newaxis] - centroids, axis=2)
+            # Apply PCA to centroids once per k
+            centroids_pca = pca.transform(centroids)
+
+            # Efficient vectorized distance calculation in PCA space
+            distances = np.sum((pixel_indices_pca[:, np.newaxis] - centroids_pca) ** 2, axis=2)
             min_distances = np.min(distances, axis=1)
-            return np.sum(min_distances ** 2)
+            total_distortion = np.sum(min_distances)
+            return k, total_distortion
 
+        # Define initial k values for coarse search
+        k_values_initial = [2, 4, 8, max_k]
+
+        # Define refined k values around the best coarse k
+        def refine_k_values(min_k):
+            return list(range(max(2, min_k - 5), min(max_k, min_k + 5)))
+
+        # Use a single ThreadPoolExecutor for both coarse and refined searches
         with ThreadPoolExecutor() as executor:
-            distortions = list(executor.map(calc_distortion, range(1, max_k + 1)))
+            # Perform coarse search in parallel
+            coarse_results = list(executor.map(batch_quantize, k_values_initial))
 
-        rate_of_change = np.diff(distortions) / np.array(distortions[:-1])
+            # Find the minimum distortion from coarse search without sorting
+            min_k, _ = min(coarse_results, key=lambda x: x[1])
 
-        if len(rate_of_change) == 0:
-            best_k = 2
-        else:
-            elbow_index = np.argmax(rate_of_change) + 1
-            best_k = elbow_index + 2
+            # Perform refined search in parallel
+            k_values_refined = refine_k_values(min_k)
+            refined_results = list(executor.map(batch_quantize, k_values_refined))
+
+        # Find the minimum distortion from refined search without sorting
+        best_k, _ = min(refined_results, key=lambda x: x[1])
 
         return best_k
