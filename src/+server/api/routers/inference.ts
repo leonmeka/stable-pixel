@@ -2,11 +2,7 @@ import Replicate from "replicate";
 import { z } from "zod";
 
 import { env } from "@/env";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "@/+server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/+server/api/trpc";
 import { db } from "@/+server/db";
 
 const replicate = new Replicate({
@@ -18,7 +14,7 @@ const ttlHasExpired = (timestamp?: string) => {
     return true;
   }
 
-  const expires = 3600;
+  const expires = 7 * 24 * 60 * 60; // 7 days
   const now = Date.now();
 
   const startedAt = new Date(timestamp).getTime();

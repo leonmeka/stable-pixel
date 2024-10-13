@@ -35,7 +35,8 @@ class R2Uploader:
             # Generate a pre-signed URL immediately after upload
             presigned_url = self.r2.generate_presigned_url(
                 'get_object',
-                Params={'Bucket': self.bucket_name, 'Key': object_name}
+                Params={'Bucket': self.bucket_name, 'Key': object_name},
+                ExpiresIn=7 * 24 * 60 * 60  # 1 week
             )
 
             return presigned_url
