@@ -134,8 +134,8 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
 
         <div className="grid gap-4">
           <p className="px-4 text-center text-xs text-muted-foreground">
-            Depending on server load, image generation may take between 5 and 80
-            seconds.
+            Image generation usually takes about 5 seconds. Depending on overall
+            usage, it may take longer.
           </p>
           <Button
             type="submit"
