@@ -13,7 +13,7 @@ export const Credits = ({ session }: CreditsProps) => {
   const hasCredits = session?.user.credits ?? 0 > 0;
   const text = hasCredits
     ? `Credits (${session?.user.credits})`
-    : "Get Credits";
+    : "Buy Credits";
 
   const handleCheckout = async () => {
     if (!session) {

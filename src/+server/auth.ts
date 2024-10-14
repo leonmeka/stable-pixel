@@ -5,12 +5,15 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
-import DiscordProvider from "next-auth/providers/discord";
 import { env } from "@/env";
 import { db } from "@/+server/db";
 import { type DefaultJWT, type JWT } from "next-auth/jwt";
 
+import EmailProvider from "next-auth/providers/email";
+import GoogleProvider from "next-auth/providers/google";
+
 import { createNewCustomer } from "./lemon";
+import { sendVerificationRequest } from "./email";
 
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
@@ -36,11 +39,19 @@ export const authOptions: NextAuthOptions = {
   jwt: { maxAge: 30 * 24 * 60 * 60 }, // 30 days
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
+    EmailProvider({
+      from: "no-reply@stable-pixel.com",
+      sendVerificationRequest,
+    }),
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+  pages: {
+    signIn: "/auth/login",
+    verifyRequest: "/auth/verify",
+  },
   session: {
     strategy: "jwt",
   },
@@ -84,10 +95,8 @@ export const authOptions: NextAuthOptions = {
       try {
         const name = user.name ?? user.email?.split("@")[0];
 
-        console.log(user);
-
         if (!user.email || !name) {
-          throw new Error("Email not found");
+          throw new Error("Missing email or name");
         }
 
         const customer = await createNewCustomer({

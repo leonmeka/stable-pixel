@@ -132,20 +132,14 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
           />
         </div>
 
-        <div className="grid gap-4">
-          <p className="px-4 text-center text-xs text-muted-foreground">
-            Image generation usually takes about 5 seconds. Depending on overall
-            usage, it may take longer.
-          </p>
-          <Button
-            type="submit"
-            size={"lg"}
-            loading={isPending}
-            disabled={!form.formState.isValid || isPending || isDisabled}
-          >
-            {isPending ? "Starting..." : "Generate (1 Credit)"}
-          </Button>
-        </div>
+        <Button
+          type="submit"
+          size={"lg"}
+          loading={isPending}
+          disabled={!form.formState.isValid || isPending || isDisabled}
+        >
+          {isPending ? "Starting..." : "Generate (1 Credit)"}
+        </Button>
       </form>
     </Form>
   );
