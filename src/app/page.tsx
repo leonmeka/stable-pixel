@@ -1,14 +1,13 @@
 "use client";
 
-import { api } from "@/trpc/react";
 import { toast } from "sonner";
 
-import { Prompt } from "@/components/features/generation/prompt";
-import { Output } from "@/components/features/generation/output";
+import { Prompt } from "@/components/features/prompt/prompt";
+import { Output } from "@/components/features/output/output";
 import { Toaster } from "@/components/ui/sonner";
-import { OpenposeEditor } from "@/components/features/generation/openpose/openpose-editor";
+import { OpenposeEditor } from "@/components/features/openpose/openpose-editor";
 import { blobToBase64 } from "@/lib/utils";
-import { List } from "@/components/features/generation/list/list";
+import { List } from "@/components/features/list/list";
 import { Navbar } from "@/components/features/layout/navbar";
 import { useSession } from "next-auth/react";
 import {
@@ -17,6 +16,7 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable";
 import { useState } from "react";
+import { api } from "@/components/providers/client-trpc-provider";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -57,11 +57,9 @@ export default function Home() {
                   return;
                 }
 
-                const base64 = await blobToBase64(pose);
-
                 await mutateAsync({
                   ...data,
-                  pose: base64,
+                  pose: await blobToBase64(pose),
                 });
               }}
               isPending={isPending}

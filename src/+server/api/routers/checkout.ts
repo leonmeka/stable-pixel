@@ -1,5 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "@/+server/api/trpc";
-import { createNewCheckout } from "@/+server/lemon";
+import { createNewCheckout } from "@/+server/lemon/lemon";
 
 export const checkoutRouter = createTRPCRouter({
   create: protectedProcedure.mutation(async ({ ctx }) => {

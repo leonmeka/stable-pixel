@@ -1,5 +1,5 @@
+import { api } from "@/components/providers/client-trpc-provider";
 import { Button } from "@/components/ui/button";
-import { api } from "@/trpc/react";
 import { Coins } from "lucide-react";
 import { type Session } from "next-auth";
 

@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { env } from "@/env";
 import { createTRPCRouter, protectedProcedure } from "@/+server/api/trpc";
-import { db } from "@/+server/db";
+import { db } from "@/+server/db/db";
 
 const replicate = new Replicate({
   auth: env.REPLICATE_API_KEY,

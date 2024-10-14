@@ -6,14 +6,14 @@ import {
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 import { env } from "@/env";
-import { db } from "@/+server/db";
+import { db } from "@/+server/db/db";
 import { type DefaultJWT, type JWT } from "next-auth/jwt";
 
 import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
 
-import { createNewCustomer } from "./lemon";
-import { sendVerificationRequest } from "./email";
+import { createNewCustomer } from "../lemon/lemon";
+import { sendVerificationRequest } from "../email/email";
 
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {

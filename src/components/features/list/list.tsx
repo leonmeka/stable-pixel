@@ -1,8 +1,8 @@
-import { api } from "@/trpc/react";
 import { type PredictionInput } from "@/types";
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { ListItem } from "./list-item";
+import { api } from "@/components/providers/client-trpc-provider";
 
 interface ListProps {
   onImageClick: (input: PredictionInput, output: string) => void;

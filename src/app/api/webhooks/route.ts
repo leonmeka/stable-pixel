@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { db } from "@/+server/db";
+import { db } from "@/+server/db/db";
 import { env } from "@/env";
 import { NextResponse, type NextRequest } from "next/server";
 import { type WebhookPayload, type Order } from "lemonsqueezy-webhooks";
