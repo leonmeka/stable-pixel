@@ -10,12 +10,7 @@ from diffusers import (
     T2IAdapter, 
     AutoencoderKL,
     StableDiffusionXLAdapterPipeline, 
-    PNDMScheduler,
-    LMSDiscreteScheduler,
-    DDIMScheduler,
-    EulerDiscreteScheduler,
     EulerAncestralDiscreteScheduler,
-    DPMSolverMultistepScheduler,
 )
 
 from classes.helpers.image_resizer import ImageResizer
@@ -26,16 +21,6 @@ MODEL_ID = "John6666/super-pixelart-xl-m-v1-v10-sdxl"
 ADAPTER__MODEL_ID = "TencentARC/t2i-adapter-openpose-sdxl-1.0"
 VAE_MODEL_ID = "madebyollin/sdxl-vae-fp16-fix"
 MODEL_CACHE = "diffusers-cache"
-
-def use_scheduler(name, config):
-    return {
-        "PNDM": PNDMScheduler.from_config(config),
-        "KLMS": LMSDiscreteScheduler.from_config(config),
-        "DDIM": DDIMScheduler.from_config(config),
-        "K_EULER": EulerDiscreteScheduler.from_config(config),
-        "K_EULER_ANCESTRAL": EulerAncestralDiscreteScheduler.from_config(config),
-        "DPMSolverMultistep": DPMSolverMultistepScheduler.from_config(config),
-    }[name]
 
 class Predictor(BasePredictor):
     def __init__(self):
@@ -50,18 +35,19 @@ class Predictor(BasePredictor):
         )  
 
     def setup(self):
-        print("Loading pipeline...")
-
         print("1: Loading Adapter...")
         adapter = T2IAdapter.from_pretrained(
-            ADAPTER__MODEL_ID, torch_dtype=torch.float16,
+            ADAPTER__MODEL_ID, 
+            torch_dtype=torch.float16 if self.device == "cuda" else torch.float32, 
+            local_files_only=True,
             cache_dir=MODEL_CACHE
         ).to(self.device)
         
         print("2: Loading vae...")
         vae=AutoencoderKL.from_pretrained(
             VAE_MODEL_ID, 
-            torch_dtype=torch.float16, 
+            torch_dtype=torch.float16 if self.device == "cuda" else torch.float32, 
+            local_files_only=True,
             cache_dir=MODEL_CACHE
         )
 
@@ -70,10 +56,14 @@ class Predictor(BasePredictor):
             MODEL_ID,
             vae=vae,
             adapter=adapter,
-            safety_checker=None,
-            torch_dtype=torch.float16 if self.device == "cuda" else torch.float32,
+            torch_dtype=torch.float16 if self.device == "cuda" else torch.float32, 
+            local_files_only=True,
             cache_dir=MODEL_CACHE,
         ).to(self.device)
+
+        if self.device == "cuda":
+            self.pipe.enable_sequential_cpu_offload()
+            self.pipe.enable_attention_slicing("max")
 
         print("Pipeline loaded succesfully!")
 
@@ -84,22 +74,8 @@ class Predictor(BasePredictor):
         negative_prompt: str = Input(description="Negative prompt of the picture", default="blurry, nsfw"),
         num_inteference_steps: int = Input(description="Number of steps", le=50, default=10),
         guidance_scale: float = Input(description="Number of steps", le=20.0, default=8.0),
-        
         pose_image: str = Input(description="Guiding image for Controlnet", default=None),
         controlnet_conditioning_scale: float = Input(description="Number of steps", default=1.0),
-
-        scheduler: str = Input(
-            default="K_EULER_ANCESTRAL",
-            choices=[
-                "DDIM",
-                "K_EULER",
-                "DPMSolverMultistep",
-                "K_EULER_ANCESTRAL",
-                "PNDM",
-                "KLMS",
-            ],
-            description="Choose a scheduler.",
-        ),
     ) -> str:
         seed = int.from_bytes(os.urandom(2), "big")
         generator = torch.Generator("cuda").manual_seed(seed)
@@ -130,7 +106,7 @@ class Predictor(BasePredictor):
             "generator": generator,
             "num_images_per_prompt": 1
         }
-        self.pipe.scheduler = use_scheduler(scheduler, self.pipe.scheduler.config)
+        self.pipe.scheduler = EulerAncestralDiscreteScheduler.from_config(self.pipe.scheduler.config)
         image = self.pipe(
             **Parameters
         ).images[0]
