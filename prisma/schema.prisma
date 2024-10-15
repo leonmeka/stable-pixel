@@ -44,7 +44,6 @@ model User {
     accounts      Account[]
     sessions      Session[]
 
-    customerId    String?
     credits       Int?
 
     Prediction Prediction[]

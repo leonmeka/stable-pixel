@@ -12,7 +12,6 @@ import { type DefaultJWT, type JWT } from "next-auth/jwt";
 import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
 
-import { createNewCustomer } from "../lemon/lemon";
 import { sendVerificationRequest } from "../email/email";
 
 declare module "next-auth/jwt" {
@@ -100,18 +99,12 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Missing email or name");
         }
 
-        const customer = await createNewCustomer({
-          email: user.email,
-          name: name,
-        });
-
         await db.user.update({
           where: {
             id: user.id,
           },
           data: {
             name: name,
-            customerId: customer.data?.data.id,
             credits: 10,
           },
         });
