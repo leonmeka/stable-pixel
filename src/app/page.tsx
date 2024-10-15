@@ -1,97 +1,15 @@
-"use client";
+import { getServerSession } from "next-auth";
 
-import { toast } from "sonner";
+import { Navbar } from "@/components/features/shared/layout/navbar";
+import { CreateCharacter } from "@/components/features/create-character/create-character";
 
-import { Prompt } from "@/components/features/prompt/prompt";
-import { Output } from "@/components/features/output/output";
-import { Toaster } from "@/components/ui/sonner";
-import { OpenposeEditor } from "@/components/features/openpose/openpose-editor";
-import { blobToBase64 } from "@/lib/utils";
-import { List } from "@/components/features/list/list";
-import { Navbar } from "@/components/features/layout/navbar";
-import { useSession } from "next-auth/react";
-import {
-  ResizablePanelGroup,
-  ResizablePanel,
-  ResizableHandle,
-} from "@/components/ui/resizable";
-import { useState } from "react";
-import { api } from "@/components/providers/client-trpc-provider";
-
-export default function Home() {
-  const { data: session } = useSession();
-
-  const [pose, setPose] = useState<Blob | null>(null);
-  const [image, setImage] = useState<string | null>(null);
-
-  const { inference } = api.useUtils();
-  const { mutateAsync, isPending } = api.inference.create.useMutation({
-    onSuccess: async () => {
-      toast("Image generation started...", {
-        position: "top-right",
-        duration: 1500,
-      });
-      await inference.list.invalidate();
-    },
-    onError: (error) => {
-      toast("Something went wrong...", {
-        description: error.message,
-        position: "top-right",
-        duration: 1500,
-      });
-    },
-  });
-
-  const isAuthorized = session ? session.user.credits > 0 : false;
+export default async function Home() {
+  const session = await getServerSession();
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden">
       <Navbar session={session} />
-
-      <main className="flex h-full w-full flex-grow overflow-hidden">
-        <div className="flex h-full w-full overflow-hidden">
-          <div className="h-full w-[350px] flex-shrink-0 overflow-y-auto">
-            <Prompt
-              onSubmit={async (data) => {
-                if (!pose) {
-                  return;
-                }
-
-                await mutateAsync({
-                  ...data,
-                  pose: await blobToBase64(pose),
-                });
-              }}
-              isPending={isPending}
-              isDisabled={!pose || !isAuthorized}
-            />
-          </div>
-
-          <ResizablePanelGroup
-            direction="vertical"
-            className="flex h-full w-full flex-col overflow-hidden"
-          >
-            <ResizablePanel defaultSize={50}>
-              <Output src={image} />
-            </ResizablePanel>
-
-            <ResizableHandle withHandle />
-
-            <ResizablePanel defaultSize={50}>
-              <OpenposeEditor onPoseChange={setPose} />
-            </ResizablePanel>
-          </ResizablePanelGroup>
-
-          <div className="h-full w-[250px] flex-shrink-0 overflow-y-auto">
-            <List
-              onImageClick={(_input, output) => {
-                setImage(output);
-              }}
-            />
-          </div>
-        </div>
-        <Toaster />
-      </main>
+      <CreateCharacter session={session} />
     </div>
   );
 }
