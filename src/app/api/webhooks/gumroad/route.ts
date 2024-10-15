@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
     const variant = body["variants[Version]"];
     const quantity = body.quantity;
 
+    console.log("Yay! Order created", email, variant, quantity);
     await handleOrderCreated(email, variant, quantity);
 
     return NextResponse.json(null, { status: 200 });
