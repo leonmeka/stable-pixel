@@ -1,6 +1,2 @@
-__pycache__
 .cog
-diffusers-cache
-
-# Test files
-**.png
+**/__pycache__
