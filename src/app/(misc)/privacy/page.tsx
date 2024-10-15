@@ -33,14 +33,14 @@ export default async function Privacy() {
           </p>
           <p>
             Payment Information: We do not store or process any payment
-            information. All payments are handled by Paddle. You can review
-            Paddle&apos;s privacy policy at{" "}
+            information. All payments are handled by XYZ. You can review
+            XYZ&apos;s privacy policy at{" "}
             <a
-              href="https://www.paddle.com"
+              href="https://www.XYZ.com"
               target="_blank"
               rel="noopener noreferrer"
             >
-              https://www.paddle.com
+              https://www.XYZ.com
             </a>
             .
           </p>
@@ -61,7 +61,7 @@ export default async function Privacy() {
           <p>
             We do not share your data with third parties except with your
             consent or for legal purposes, and for payment processing through
-            Paddle.
+            XYZ.
           </p>
 
           <h2>5. Your Rights</h2>
