@@ -132,14 +132,21 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
           />
         </div>
 
-        <Button
-          type="submit"
-          size={"lg"}
-          loading={isPending}
-          disabled={!form.formState.isValid || isPending || isDisabled}
-        >
-          {isPending ? "Starting..." : "Generate (1 Credit)"}
-        </Button>
+        <div className="space-y-2">
+          <p className="text-pretty p-2 text-xs text-muted-foreground">
+            First image may take up to 2 minutes. Subsequent images take less
+            then 5 seconds.
+          </p>
+          <Button
+            type="submit"
+            className="w-full"
+            size={"lg"}
+            loading={isPending}
+            disabled={!form.formState.isValid || isPending || isDisabled}
+          >
+            {isPending ? "Starting..." : "Generate (1 Credit)"}
+          </Button>
+        </div>
       </form>
     </Form>
   );
