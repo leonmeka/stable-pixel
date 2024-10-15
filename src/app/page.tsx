@@ -1,9 +1,9 @@
 import { Navbar } from "@/components/features/shared/layout/navbar";
 import { CreateCharacter } from "@/components/features/create-character/create-character";
-import { getServerSession } from "next-auth";
+import { getServerAuthSession } from "@/+server/auth/auth";
 
 export default async function Home() {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden">

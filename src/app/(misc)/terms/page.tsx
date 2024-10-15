@@ -1,8 +1,8 @@
-import { getServerSession } from "next-auth";
 import { Navbar } from "@/components/features/shared/layout/navbar";
+import { getServerAuthSession } from "@/+server/auth/auth";
 
 export default async function Terms() {
-  const session = await getServerSession();
+  const session = await getServerAuthSession();
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden">

@@ -15,14 +15,13 @@ export default function Verify() {
           <CardTitle className="text-2xl">Verify Login</CardTitle>
           <CardDescription className="text-sm">
             We&apos;ve just sent you an email with a link to verify your login.
-            Please check your inbox :-)
           </CardDescription>
         </CardHeader>
 
         <CardContent className="flex flex-col items-center space-y-4">
-          <Loader2 size={32} className="animate-spin" />
+          <Loader2 size={32} className="animate-spin text-muted-foreground" />
           <span className="text-center text-sm text-muted-foreground">
-            Waiting for verification...
+            Awaiting verification...
           </span>
         </CardContent>
       </Card>
