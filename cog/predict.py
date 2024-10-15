@@ -4,7 +4,6 @@ import os
 import base64
 from io import BytesIO
 from PIL import Image
-from concurrent.futures import ThreadPoolExecutor
 
 from cog import BasePredictor, Input
 
