@@ -58,4 +58,10 @@
   ::-webkit-scrollbar-thumb:hover {
     background-color: var(--background);
   }
+  ::-webkit-scrollbar-track {
+    background-color: var(--background);
+  }
+  ::-webkit-scrollbar-corner {
+    background-color: var(--background);
+  }
 }
