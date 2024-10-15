@@ -17,7 +17,6 @@ import { sendVerificationRequest } from "../email/email";
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
     id: string;
-    customerId: string;
     credits: number;
   }
 }
@@ -26,7 +25,6 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      customerId: string;
       credits: number;
     } & DefaultSession["user"];
   }
@@ -62,7 +60,6 @@ export const authOptions: NextAuthOptions = {
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.image = token.picture;
-        session.user.customerId = token.customerId;
         session.user.credits = token.credits;
       }
 
@@ -85,7 +82,6 @@ export const authOptions: NextAuthOptions = {
         name: dbUser.name,
         email: dbUser.email,
         picture: dbUser.image,
-        customerId: dbUser.customerId,
         credits: dbUser.credits,
       } as JWT;
     },
