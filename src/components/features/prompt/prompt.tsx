@@ -133,7 +133,7 @@ export const Prompt = ({ onSubmit, isPending, isDisabled }: PromptProps) => {
         </div>
 
         <div className="space-y-2">
-          <p className="text-pretty p-2 text-xs text-muted-foreground">
+          <p className="text-pretty p-2 text-center text-xs text-muted-foreground">
             First image may take up to 2 minutes. Subsequent images take less
             then 5 seconds.
           </p>
