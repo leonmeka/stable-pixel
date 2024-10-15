@@ -8,7 +8,11 @@ interface AuthButtonProps {
 
 export const AuthButton = ({ session }: AuthButtonProps) => {
   if (!session) {
-    return <Button onClick={() => signIn()}>Login</Button>;
+    return (
+      <Button onClick={() => signIn()} disabled>
+        Login
+      </Button>
+    );
   }
 
   return (

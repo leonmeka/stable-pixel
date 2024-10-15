@@ -82,7 +82,9 @@ export default function Login() {
                 type="submit"
                 className="w-full"
                 loading={isPending}
-                disabled={!form.formState.isValid || isPending}
+                disabled
+                /*                 disabled={!form.formState.isValid || isPending}
+                 */
               >
                 Login
               </Button>
@@ -95,6 +97,7 @@ export default function Login() {
             <Button
               className="w-full"
               variant="secondary"
+              disabled
               onClick={() => void signIn("google", { callbackUrl: "/" })}
             >
               Login with Google
