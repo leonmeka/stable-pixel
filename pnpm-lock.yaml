@@ -11,9 +11,6 @@ dependencies:
   '@hookform/resolvers':
     specifier: ^3.9.0
     version: 3.9.0(react-hook-form@7.53.0)
-  '@lemonsqueezy/lemonsqueezy.js':
-    specifier: ^3.3.1
-    version: 3.3.1
   '@prisma/client':
     specifier: ^5.14.0
     version: 5.20.0(prisma@5.20.0)
@@ -59,9 +56,6 @@ dependencies:
   html2canvas:
     specifier: ^1.4.1
     version: 1.4.1
-  lemonsqueezy-webhooks:
-    specifier: ^0.1.2
-    version: 0.1.2
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -331,11 +325,6 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
-
-  /@lemonsqueezy/lemonsqueezy.js@3.3.1:
-    resolution: {integrity: sha512-gM/FdNsK3BlrD6JRrhmiyqBXQsCpzSUdKSoZwJMQfXqfqcK321og+uMssc6HYcygUMrGvPnNJyJ1RqZPFDrgtg==}
-    engines: {node: '>=20'}
-    dev: false
 
   /@next/env@14.2.14:
     resolution: {integrity: sha512-/0hWQfiaD5//LvGNgc8PjvyqV50vGK0cADYzaoOOGN8fxzBn3iAiaq3S0tCRnFBldq0LVveLcxCTi41ZoYgAgg==}
@@ -2709,10 +2698,6 @@ packages:
 
   /leac@0.6.0:
     resolution: {integrity: sha512-y+SqErxb8h7nE/fiEX07jsbuhrpO9lL8eca7/Y1nuWV2moNlXhyd59iDGcRf6moVyDMbmTNzL40SUyrFU/yDpg==}
-    dev: false
-
-  /lemonsqueezy-webhooks@0.1.2:
-    resolution: {integrity: sha512-L0gaGYWv+kzxgr4oumKGY8ss1Bjty4GJdDmXiR6s3lXJfPtuO2Auw8el48N/E9O1TpSzBMxFAXjkwZD0O3WOhw==}
     dev: false
 
   /levn@0.4.1:
