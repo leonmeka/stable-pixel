@@ -1,8 +1,10 @@
+import time
 import torch
 import os
 import base64
 from io import BytesIO
 from PIL import Image
+from concurrent.futures import ThreadPoolExecutor
 
 from cog import BasePredictor, Input
 
@@ -18,7 +20,7 @@ from classes.post_processor import PostProcessor
 from classes.r2_uploader import R2Uploader
 
 MODEL_ID = "John6666/super-pixelart-xl-m-v1-v10-sdxl"
-ADAPTER__MODEL_ID = "TencentARC/t2i-adapter-openpose-sdxl-1.0"
+ADAPTER_MODEL_ID = "TencentARC/t2i-adapter-openpose-sdxl-1.0"
 VAE_MODEL_ID = "madebyollin/sdxl-vae-fp16-fix"
 MODEL_CACHE = "diffusers-cache"
 
@@ -35,37 +37,45 @@ class Predictor(BasePredictor):
         )  
 
     def setup(self):
-        print("1: Loading Adapter...")
+        performance = {}
+
+        print("1: Loading Adapter and VAE...")
+        start_time = time.time()
         adapter = T2IAdapter.from_pretrained(
-            ADAPTER__MODEL_ID, 
+            ADAPTER_MODEL_ID, 
             torch_dtype=torch.float16 if self.device == "cuda" else torch.float32, 
-            local_files_only=True,
-            cache_dir=MODEL_CACHE
-        ).to(self.device)
-        
-        print("2: Loading vae...")
-        vae=AutoencoderKL.from_pretrained(
+            cache_dir=MODEL_CACHE,
+        )
+        vae = AutoencoderKL.from_pretrained(
             VAE_MODEL_ID, 
             torch_dtype=torch.float16 if self.device == "cuda" else torch.float32, 
-            local_files_only=True,
-            cache_dir=MODEL_CACHE
+            cache_dir=MODEL_CACHE,
         )
+        performance["Adapter and VAE"] = (time.time() - start_time) * 1000
 
-        print("3: Loading Stable Diffusion XL Adapter Pipeline...")
+        print("2: Loading Stable Diffusion XL Adapter Pipeline...")
+        start_time = time.time()
         self.pipe = StableDiffusionXLAdapterPipeline.from_pretrained(
             MODEL_ID,
             vae=vae,
             adapter=adapter,
             torch_dtype=torch.float16 if self.device == "cuda" else torch.float32, 
-            local_files_only=True,
             cache_dir=MODEL_CACHE,
         ).to(self.device)
+        self.pipe.scheduler = EulerAncestralDiscreteScheduler.from_config(self.pipe.scheduler.config)
+        performance["Pipeline"] = (time.time() - start_time) * 1000
 
-        if self.device == "cuda":
-            self.pipe.enable_sequential_cpu_offload()
-            self.pipe.enable_attention_slicing("max")
+        print("--------------------------------------------------")
+        print("PERFORMANCE:")
+        for task, time_ms in performance.items():
+            print(f"{task}: {time_ms:.2f}ms")
 
-        print("Pipeline loaded succesfully!")
+        total_time = sum(performance.values()) * 0.001
+        print(f"Total: {total_time:.2f}s")
+        print("--------------------------------------------------")
+
+        print("Pipeline loaded successfully!")
+
 
     @torch.inference_mode()
     def predict(
@@ -77,9 +87,6 @@ class Predictor(BasePredictor):
         pose_image: str = Input(description="Guiding image for Controlnet", default=None),
         controlnet_conditioning_scale: float = Input(description="Number of steps", default=1.0),
     ) -> str:
-        seed = int.from_bytes(os.urandom(2), "big")
-        generator = torch.Generator("cuda").manual_seed(seed)
-
         # Load the pose image
         if pose_image:
             pose_image = Image.open(BytesIO(base64.b64decode(pose_image))).convert("RGB")
@@ -88,10 +95,10 @@ class Predictor(BasePredictor):
             # Hint: this is due to the way the model was trained, see https://www.reddit.com/r/StableDiffusion/comments/1f854k3/psa_fixing_sdxl_t2iadapter_openpose/)
             r, g, b = pose_image.split()
             pose_image = Image.merge("RGB", (b, g, r))
-            
             pose_image = self.image_resizer.resize(pose_image, 1024, 1024)
 
         # Generate the image
+        generator = torch.Generator("cuda").manual_seed(int.from_bytes(os.urandom(2), "big"))
         Parameters = {
             "width": 1024,
             "height": 1024,
@@ -106,7 +113,6 @@ class Predictor(BasePredictor):
             "generator": generator,
             "num_images_per_prompt": 1
         }
-        self.pipe.scheduler = EulerAncestralDiscreteScheduler.from_config(self.pipe.scheduler.config)
         image = self.pipe(
             **Parameters
         ).images[0]
