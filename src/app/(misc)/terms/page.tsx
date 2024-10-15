@@ -1,5 +1,5 @@
-import { Navbar } from "@/components/features/shared/layout/navbar";
 import { getServerSession } from "next-auth";
+import { Navbar } from "@/components/features/shared/layout/navbar";
 
 export default async function Terms() {
   const session = await getServerSession();

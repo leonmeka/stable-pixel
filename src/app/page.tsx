@@ -1,7 +1,6 @@
-import { getServerSession } from "next-auth";
-
 import { Navbar } from "@/components/features/shared/layout/navbar";
 import { CreateCharacter } from "@/components/features/create-character/create-character";
+import { getServerSession } from "next-auth";
 
 export default async function Home() {
   const session = await getServerSession();

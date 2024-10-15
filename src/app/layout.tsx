@@ -2,10 +2,10 @@ import "@/styles/globals.css";
 
 import { GeistMono } from "geist/font/mono";
 import { type Metadata } from "next";
-import { getSession } from "next-auth/react";
 
 import { ClientSessionProvider } from "@/components/providers/client-session-provider";
 import { ClientTRPCProvider } from "@/components/providers/client-trpc-provider";
+import { getServerAuthSession } from "@/+server/auth/auth";
 
 export const metadata: Metadata = {
   title: "Stable Pixel",
@@ -16,16 +16,14 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const session = await getSession();
+  const session = await getServerAuthSession();
 
   return (
     <html lang="en">
       <body className={GeistMono.className}>
-        <ClientTRPCProvider>
-          <ClientSessionProvider session={session}>
-            {children}
-          </ClientSessionProvider>
-        </ClientTRPCProvider>
+        <ClientSessionProvider session={session}>
+          <ClientTRPCProvider>{children}</ClientTRPCProvider>
+        </ClientSessionProvider>
       </body>
     </html>
   );
