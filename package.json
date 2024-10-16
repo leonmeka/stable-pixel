@@ -12,7 +12,7 @@
     "webhooks:tunnel": "cloudflared tunnel --url http://localhost:3000",
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "lint": "eslint . --ext .ts,.tsx",
-    "dev": "next dev",
+    "dev": "pnpm run db:up && next dev",
     "build": "next build",
     "start": "next start"
   },

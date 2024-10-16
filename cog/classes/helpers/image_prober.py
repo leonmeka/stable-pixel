@@ -25,9 +25,10 @@ class ImageProber:
         # Compute spacing between the peaks
         hspacing = np.diff(hpeaks)
         vspacing = np.diff(vpeaks)
+        padding = 4
 
         # Return the max median spacing
-        return int(max(np.median(hspacing), np.median(vspacing)))
+        return int(max(np.median(hspacing + padding), np.median(vspacing + padding)))
 
     @staticmethod
     def get_best_k(image: Image, max_k: int, pca_components: int = 1) -> int:

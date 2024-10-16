@@ -23,11 +23,17 @@ export const Navbar = ({ session }: NavbarProps) => {
         <Link href="/">
           <Button>Home</Button>
         </Link>
+        <Link href="mailto:help@stablepixel.app">
+          <Button variant={"ghost"}>Support</Button>
+        </Link>
+        <Link href="/legal">
+          <Button variant={"ghost"}>Legal</Button>
+        </Link>
         <Link href="/terms">
-          <Button variant={"secondary"}>Terms</Button>
+          <Button variant={"ghost"}>Terms</Button>
         </Link>
         <Link href="/privacy">
-          <Button variant={"secondary"}>Privacy</Button>
+          <Button variant={"ghost"}>Privacy</Button>
         </Link>
       </div>
 
