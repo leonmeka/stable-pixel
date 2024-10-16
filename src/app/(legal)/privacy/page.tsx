@@ -11,7 +11,7 @@ export default async function Privacy() {
       <main className="h-full w-full overflow-scroll">
         <div className="m-auto flex h-full w-full max-w-2xl flex-col gap-4 p-8">
           <h1>Privacy Policy</h1>
-          <p>Last Updated: 2024-10-15</p>
+          <p>Last Updated: 2024-10-16</p>
 
           <p>
             At Stable Pixel, we value your privacy and are committed to
@@ -33,14 +33,14 @@ export default async function Privacy() {
           </p>
           <p>
             Payment Information: We do not store or process any payment
-            information. All payments are handled by XYZ. You can review
-            XYZ&apos;s privacy policy at{" "}
+            information. All payments are handled by Gumraod. You can review
+            Gumroad&apos;s privacy policy at{" "}
             <a
-              href="https://www.XYZ.com"
+              href="https://gumroad.com/privacy"
               target="_blank"
               rel="noopener noreferrer"
             >
-              https://www.XYZ.com
+              https://gumroad.com/privacy
             </a>
             .
           </p>
@@ -61,7 +61,7 @@ export default async function Privacy() {
           <p>
             We do not share your data with third parties except with your
             consent or for legal purposes, and for payment processing through
-            XYZ.
+            Gumroad.
           </p>
 
           <h2>5. Your Rights</h2>
