@@ -15,19 +15,19 @@ interface NavbarProps {
 export const Navbar = ({ session }: NavbarProps) => {
   return (
     <nav className="flex h-9 w-full items-center justify-end overflow-hidden border-b bg-background">
-      <Link href="/">
+      <Link href="/" className="flex items-center gap-1">
         <Image src={Logo as string} alt="Logo" className="h-9 w-9" />
       </Link>
 
       <div className="flex w-full flex-1 items-center">
         <Link href="/">
-          <Button>Home</Button>
+          <Button variant={"secondary"}>Home</Button>
         </Link>
         <Link href="mailto:help@stablepixel.app">
           <Button variant={"ghost"}>Support</Button>
         </Link>
-        <Link href="/legal">
-          <Button variant={"ghost"}>Legal</Button>
+        <Link href="/imprint">
+          <Button variant={"ghost"}>Imprint</Button>
         </Link>
         <Link href="/terms">
           <Button variant={"ghost"}>Terms</Button>
