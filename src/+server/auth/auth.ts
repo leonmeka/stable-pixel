@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
     EmailProvider({
-      from: "no-reply@stable-pixel.app",
+      from: env.RESEND_EMAIL_FROM,
       sendVerificationRequest,
     }),
     GoogleProvider({
