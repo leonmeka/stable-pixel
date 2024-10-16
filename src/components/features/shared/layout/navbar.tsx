@@ -5,6 +5,8 @@ import { AuthButton } from "@/components/features/auth/auth-button";
 import { type Session } from "next-auth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
+import Logo from "public/logo.svg";
 
 interface NavbarProps {
   session: Session | null;
@@ -12,7 +14,11 @@ interface NavbarProps {
 
 export const Navbar = ({ session }: NavbarProps) => {
   return (
-    <nav className="flex w-full items-center justify-end border-b bg-background">
+    <nav className="flex h-9 w-full items-center justify-end overflow-hidden border-b bg-background">
+      <Link href="/">
+        <Image src={Logo as string} alt="Logo" className="h-9 w-9" />
+      </Link>
+
       <div className="flex w-full flex-1 items-center">
         <Link href="/">
           <Button>Home</Button>
