@@ -95,6 +95,8 @@ class Predictor(BasePredictor):
             r, g, b = pose_image.split()
             pose_image = Image.merge("RGB", (b, g, r))
             pose_image = self.image_resizer.resize(pose_image, 1024, 1024)
+        else:
+            pose_image = Image.new("RGB", (1024, 1024), (0, 0, 0))
 
         # Generate the image
         generator = torch.Generator("cuda").manual_seed(int.from_bytes(os.urandom(2), "big"))

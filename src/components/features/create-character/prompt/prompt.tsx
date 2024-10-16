@@ -17,7 +17,7 @@ const numInferenceStepsMIN = 5;
 const numInferenceStepsMAX = 10;
 const guidanceScaleMIN = 1;
 const guidanceScaleMAX = 2;
-const poseStrengthMIN = 0.5;
+const poseStrengthMIN = 0.0;
 const poseStrengthMAX = 1.5;
 
 const SCHEMA = z.object({

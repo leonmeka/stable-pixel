@@ -25,6 +25,8 @@ export const env = createEnv({
 
     REPLICATE_API_KEY: z.string(),
     REPLICATE_MODEL_ID: z.string(),
+
+    GUMROAD_SHOP_URL: z.string().url(),
   },
 
   client: {},
@@ -43,6 +45,8 @@ export const env = createEnv({
 
     REPLICATE_API_KEY: process.env.REPLICATE_API_KEY,
     REPLICATE_MODEL_ID: process.env.REPLICATE_MODEL_ID,
+
+    GUMROAD_SHOP_URL: process.env.GUMROAD_SHOP_URL,
   },
 
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

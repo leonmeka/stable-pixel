@@ -25,7 +25,7 @@ class ImageProber:
         # Compute spacing between the peaks
         hspacing = np.diff(hpeaks)
         vspacing = np.diff(vpeaks)
-        padding = 4
+        padding = 2
 
         # Return the max median spacing
         return int(max(np.median(hspacing), np.median(vspacing)) + padding)
