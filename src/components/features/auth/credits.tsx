@@ -10,9 +10,7 @@ export const Credits = ({ session }: CreditsProps) => {
   const { mutateAsync, isPending } = api.checkout.create.useMutation();
 
   const hasCredits = session?.user.credits ?? 0 > 0;
-  const text = hasCredits
-    ? `Credits (${session?.user.credits})`
-    : "Buy Credits";
+  const text = hasCredits ? `Credits: ${session?.user.credits}` : "Buy Credits";
 
   const handleCheckout = async () => {
     if (!session) {

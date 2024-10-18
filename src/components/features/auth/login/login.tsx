@@ -39,13 +39,15 @@ export const Login = () => {
 
   const handleSubmit = async (values: z.infer<typeof SCHEMA>) => {
     setIsPending(true);
-
     await signIn("email", {
       email: values.email,
       callbackUrl: "/",
     });
-
     setIsPending(false);
+  };
+
+  const handleSocialLogin = async (provider: string) => {
+    await signIn(provider, { callbackUrl: "/" });
   };
 
   return (
@@ -94,7 +96,7 @@ export const Login = () => {
           <Button
             className="w-full"
             variant="secondary"
-            onClick={() => void signIn("google", { callbackUrl: "/" })}
+            onClick={() => handleSocialLogin("google")}
           >
             Login with Google
           </Button>
