@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 
-import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { ClientSessionProvider } from "@/components/providers/client-session-provider";
@@ -20,7 +20,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={GeistMono.className}>
+      <body className={GeistSans.className}>
         <ClientSessionProvider session={session}>
           <ClientTRPCProvider>{children}</ClientTRPCProvider>
         </ClientSessionProvider>
