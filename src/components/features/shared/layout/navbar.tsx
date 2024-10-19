@@ -14,21 +14,15 @@ interface NavbarProps {
 
 export const Navbar = ({ session }: NavbarProps) => {
   return (
-    <nav className="flex h-9 w-full flex-grow items-center justify-end overflow-hidden border-b bg-background">
+    <nav className="flex h-10 w-full flex-grow items-center justify-end overflow-hidden border-b bg-background">
       <Link href="/" className="flex items-center gap-1">
         <Image src={Logo as string} alt="Logo" className="h-9 w-9" />
       </Link>
 
       <div className="flex w-full flex-1 items-center">
-        <Link href="/">
+        <Link href="/app">
           <Button variant={"secondary"}>Home</Button>
         </Link>
-        {/*      <Link href="/terms">
-          <Button variant={"ghost"}>Terms</Button>
-        </Link>
-        <Link href="/privacy">
-          <Button variant={"ghost"}>Privacy</Button>
-        </Link> */}
       </div>
 
       <div className="flex items-center">

@@ -41,13 +41,13 @@ export const Login = () => {
     setIsPending(true);
     await signIn("email", {
       email: values.email,
-      callbackUrl: "/",
+      callbackUrl: "/app",
     });
     setIsPending(false);
   };
 
   const handleSocialLogin = async (provider: string) => {
-    await signIn(provider, { callbackUrl: "/" });
+    await signIn(provider, { callbackUrl: "/app" });
   };
 
   return (
