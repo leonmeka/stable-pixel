@@ -23,9 +23,6 @@ export const Navbar = ({ session }: NavbarProps) => {
         <Link href="/">
           <Button variant={"secondary"}>Home</Button>
         </Link>
-        <Link href="/imprint">
-          <Button variant={"ghost"}>Imprint</Button>
-        </Link>
         <Link href="/terms">
           <Button variant={"ghost"}>Terms</Button>
         </Link>
