@@ -21,7 +21,7 @@ export const Navbar = ({ session }: NavbarProps) => {
 
       <div className="flex w-full flex-1 items-center">
         <Link href="/app">
-          <Button variant={"secondary"}>Home</Button>
+          <Button variant={"secondary"}>App</Button>
         </Link>
       </div>
 
