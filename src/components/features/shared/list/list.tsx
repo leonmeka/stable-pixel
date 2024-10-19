@@ -27,7 +27,7 @@ export const List = ({ onImageClick }: ListProps) => {
       )}
 
       {isFetched && (
-        <div className="flex flex-col gap-1 overflow-y-auto">
+        <div className="flex w-full flex-col items-center gap-1 overflow-y-auto">
           {data?.map((item) => (
             <ListItem key={item.id} item={item} onImageClick={onImageClick} />
           ))}

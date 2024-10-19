@@ -1,7 +1,7 @@
 "use client";
 
+import { useState } from "react";
 import { toast } from "sonner";
-
 import { Prompt } from "@/components/features/create-character/prompt/prompt";
 import { Output } from "@/components/features/create-character/output/output";
 import { Toaster } from "@/components/ui/sonner";
@@ -13,9 +13,7 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "@/components/ui/resizable";
-import { useState } from "react";
 import { api } from "@/components/providers/client-trpc-provider";
-
 import { type Session } from "next-auth";
 
 interface CreateCharacterProps {
@@ -47,15 +45,14 @@ export const CreateCharacter = ({ session }: CreateCharacterProps) => {
   const isAuthorized = session ? session.user.credits > 0 : false;
 
   return (
-    <main className="flex h-full w-full flex-grow overflow-hidden">
-      <div className="flex h-full w-full overflow-hidden">
-        <div className="h-full w-[350px] flex-shrink-0 overflow-y-auto">
+    <main className="flex h-full w-full flex-grow flex-col overflow-hidden md:flex-row">
+      <div className="flex h-full w-full flex-col overflow-y-auto md:flex-row">
+        <div className="w-full flex-shrink-0 md:h-full md:w-[350px]">
           <Prompt
             onSubmit={async (data) => {
               if (!pose) {
                 return;
               }
-
               await mutateAsync({
                 ...data,
                 pose: await blobToBase64(pose),
@@ -68,7 +65,7 @@ export const CreateCharacter = ({ session }: CreateCharacterProps) => {
 
         <ResizablePanelGroup
           direction="vertical"
-          className="flex h-full w-full flex-col overflow-hidden"
+          className="flex h-full min-h-[500px] w-full"
         >
           <ResizablePanel defaultSize={50}>
             <Output src={image} />
@@ -81,7 +78,7 @@ export const CreateCharacter = ({ session }: CreateCharacterProps) => {
           </ResizablePanel>
         </ResizablePanelGroup>
 
-        <div className="h-full w-[250px] flex-shrink-0 overflow-y-auto">
+        <div className="w-full flex-shrink-0 overflow-y-auto md:h-full md:w-[250px]">
           <List
             onImageClick={(_input, output) => {
               setImage(output);

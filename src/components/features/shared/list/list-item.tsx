@@ -16,9 +16,9 @@ export const ListItem = ({ item, onImageClick }: ListItemProps) => {
 
   return (
     <Card
-      className={`border-none ${item.status === "succeeded" ? "" : "animate-pulse"}`}
+      className={`h-auto w-full border-none ${item.status === "succeeded" ? "" : "animate-pulse"}`}
     >
-      <CardContent className="p-2">
+      <CardContent className="flex items-center justify-center p-2">
         {item.status === "succeeded" ? (
           <img
             src={item.output as string}

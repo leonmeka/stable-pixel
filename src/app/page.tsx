@@ -6,7 +6,7 @@ export default async function Home() {
   const session = await getServerAuthSession();
 
   return (
-    <div className="flex h-screen w-screen flex-col overflow-hidden">
+    <div className="flex h-dvh w-dvw flex-col overflow-hidden">
       <Navbar session={session} />
       <CreateCharacter session={session} />
     </div>

@@ -5,11 +5,11 @@ export default async function Terms() {
   const session = await getServerAuthSession();
 
   return (
-    <div className="flex h-screen w-screen flex-col overflow-hidden">
+    <div className="flex h-dvh w-dvw flex-col overflow-hidden">
       <Navbar session={session} />
 
-      <main className="h-full w-full overflow-scroll">
-        <div className="m-auto flex h-full w-full max-w-2xl flex-col gap-4 p-8">
+      <main className="h-full w-full overflow-y-scroll">
+        <div className="m-auto mt-4 flex h-full w-full max-w-2xl flex-col gap-4 p-8">
           <h1>Terms of Service</h1>
           <p>Last Updated: 2024-10-15</p>
 
