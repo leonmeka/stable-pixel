@@ -21,13 +21,13 @@ const handleOrderCreated = async (
   let credits = 0;
 
   switch (variant) {
-    case "100x Credits":
+    case "100 Credits":
       credits = 100;
       break;
-    case "500x Credits":
+    case "500 Credits":
       credits = 500;
       break;
-    case "1000x Credits":
+    case "1000 Credits":
       credits = 1_000;
       break;
     default:
