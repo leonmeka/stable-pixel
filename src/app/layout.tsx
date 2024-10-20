@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 
 import { ClientSessionProvider } from "@/components/providers/client-session-provider";
 import { ClientTRPCProvider } from "@/components/providers/client-trpc-provider";
@@ -24,6 +25,7 @@ export default async function RootLayout({
         <ClientSessionProvider session={session}>
           <ClientTRPCProvider>{children}</ClientTRPCProvider>
         </ClientSessionProvider>
+        <Analytics />
       </body>
     </html>
   );
