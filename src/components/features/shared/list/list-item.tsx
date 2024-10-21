@@ -31,7 +31,7 @@ export const ListItem = ({ item, onImageClick }: ListItemProps) => {
             className="aspect-square cursor-pointer outline outline-2 outline-muted-foreground rendering-pixelated hover:outline-primary"
           />
         ) : (
-          <div className="grid aspect-square items-center justify-center bg-muted">
+          <div className="grid aspect-square h-full w-full items-center justify-center bg-muted">
             <Loader2 size={32} className="animate-spin text-muted-foreground" />
           </div>
         )}
