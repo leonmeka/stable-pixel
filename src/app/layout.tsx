@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   title: "Stable Pixel",
   description: "Stable Pixel",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+  openGraph: {
+    images: [{ url: "/og-image.png" }],
+  },
 };
 
 export default async function RootLayout({
