@@ -6,8 +6,8 @@ interface CanvasVertexProps {
   canvasSize: CanvasSize;
   position: Position;
   isGrabbed: boolean;
-  onDrag: (e: React.MouseEvent) => void;
-  onMouseUp: () => void;
+  onPointerDown: (e: React.PointerEvent) => void;
+  onPointerUp: () => void;
   style: React.CSSProperties;
 }
 
@@ -15,8 +15,8 @@ export const CanvasVertex = ({
   canvasSize,
   position,
   isGrabbed,
-  onDrag,
-  onMouseUp,
+  onPointerDown,
+  onPointerUp,
   style,
 }: CanvasVertexProps) => {
   const x = (position.left / 100) * canvasSize.width;
@@ -31,8 +31,8 @@ export const CanvasVertex = ({
       r={radius}
       cursor={`${isGrabbed ? "grabbing" : "grab"}`}
       fill={style.backgroundColor}
-      onMouseDown={onDrag}
-      onMouseUp={onMouseUp}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
     />
   );
 };

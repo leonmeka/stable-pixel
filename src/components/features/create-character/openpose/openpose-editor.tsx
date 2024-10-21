@@ -28,11 +28,11 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
     height: 1024,
   });
 
-  const handleMouseDown = (e: React.MouseEvent, vertexName: string) => {
+  const handlePointerDown = (e: React.PointerEvent, vertexName: string) => {
     setDraggingVertex(vertexName);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handlePointerMove = (e: React.PointerEvent) => {
     if (!draggingVertex || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
@@ -52,7 +52,7 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
     });
   };
 
-  const handleMouseUp = () => {
+  const handlePointerUp = () => {
     setDraggingVertex(null);
     void handleCapture();
   };
@@ -171,7 +171,7 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
       <svg
         viewBox={`0 0 ${canvasSize.width} ${canvasSize.height}`}
         className="absolute aspect-square h-full bg-black/25"
-        onMouseMove={handleMouseMove}
+        onPointerMove={handlePointerMove}
       >
         {edgesData.map((edge) => (
           <CanvasEdge
@@ -188,8 +188,8 @@ export const OpenposeEditor = ({ onPoseChange }: OpenposeEditorProps) => {
             canvasSize={canvasSize}
             position={vertices[vertex.name]!}
             isGrabbed={draggingVertex === vertex.name}
-            onMouseUp={handleMouseUp}
-            onDrag={(e) => handleMouseDown(e, vertex.name)}
+            onPointerUp={handlePointerUp}
+            onPointerDown={(e) => handlePointerDown(e, vertex.name)}
             style={vertex.style}
           />
         ))}
