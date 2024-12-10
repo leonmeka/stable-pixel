@@ -19,8 +19,6 @@ export const env = createEnv({
       process.env.VERCEL ? z.string() : z.string().url(),
     ),
 
-    RESEND_API_KEY: z.string(),
-    RESEND_EMAIL_FROM: z.string().email(),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
 
@@ -40,8 +38,6 @@ export const env = createEnv({
 
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-    RESEND_API_KEY: process.env.RESEND_API_KEY,
-    RESEND_EMAIL_FROM: process.env.RESEND_EMAIL_FROM,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
 

@@ -86,7 +86,7 @@ export default async function Privacy() {
           <h2>8. Contact Information</h2>
           <p>
             For any questions or concerns, contact us at{" "}
-            <a href="mailto:help@stablepixel.app">help@stablepixel.app</a>.
+            <a href="mailto:leonmeka@gmail.com">leonmeka@gmail.com</a>.
           </p>
         </div>
       </main>

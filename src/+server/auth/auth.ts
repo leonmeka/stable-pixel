@@ -9,10 +9,7 @@ import { env } from "@/env";
 import { db } from "@/+server/db/db";
 import { type DefaultJWT, type JWT } from "next-auth/jwt";
 
-import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
-
-import { sendVerificationRequest } from "../email/email";
 
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
@@ -36,10 +33,6 @@ export const authOptions: NextAuthOptions = {
   jwt: { maxAge: 30 * 24 * 60 * 60 }, // 30 days
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
-    EmailProvider({
-      from: env.RESEND_EMAIL_FROM,
-      sendVerificationRequest,
-    }),
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
@@ -48,7 +41,6 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: {
     signIn: "/auth/login",
-    verifyRequest: "/auth/verify",
   },
   session: {
     strategy: "jwt",
